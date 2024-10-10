@@ -12,7 +12,7 @@ public class Pep {
     private double velocidadY = 0;
     private boolean enElAire = false;
     private final double GRAVEDAD = 0.5;
-    private final double VELOCIDAD_SALTO = -11;
+    private final double VELOCIDAD_SALTO = -15;
 
     public Pep(int x, int y, int ancho, int alto, Color color) {
         this.x = x;
