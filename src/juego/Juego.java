@@ -5,28 +5,25 @@ import entorno.Entorno;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego {
-	// El objeto Entorno que controla el tiempo y otros
-	private static final int ANCHO_ENTORNO = 800;
-	private static final int ALTO_ENTORNO = 600;
-	private Entorno entorno;
-	private Isla[] islas;
-	// Variables y métodos propios de cada grupo
-	// ...
-	
-	public Juego() {
-		// Inicializa el objeto entorno
-		this.entorno = new Entorno(this, "Al rescate de los Gnomos - Grupo 8 - Igor - Abalde - Choque", ANCHO_ENTORNO, ALTO_ENTORNO);
-		this.islas = new Isla[15];
-		crearIslas();
-		
-		// Inicializar lo que haga falta para el juego
-		// ...
-		// Inicia el juego!
-		this.entorno.iniciar();
-		
-	}
-	
-	private void crearIslas() {
+    // El objeto Entorno que controla el tiempo y otros
+    private static final int ANCHO_ENTORNO = 800;
+    private static final int ALTO_ENTORNO = 600;
+    private Entorno entorno;
+    private Isla[] islas;
+    private Pep pep;
+
+    public Juego() {
+        // Inicializa el objeto entorno
+        this.entorno = new Entorno(this, "Al rescate de los Gnomos - Grupo 8 - Igor - Abalde - Choque", ANCHO_ENTORNO, ALTO_ENTORNO);
+        this.islas = new Isla[15];
+        this.pep = new Pep(400, 300, 30, 30, Color.RED);
+        crearIslas();
+        
+        // Inicia el juego
+        this.entorno.iniciar();
+    }
+    
+    private void crearIslas() {
         int xCentro = ANCHO_ENTORNO / 2;
         int yInicial = 100;
         int anchoIsla = 120;
@@ -36,7 +33,7 @@ public class Juego extends InterfaceJuego {
         int index = 0;
 
         for (int filas = 0; filas < 5; filas++) {
-            int xInicial = xCentro - (filas * espaciadoX / 2); 
+            int xInicial = xCentro - (filas * espaciadoX / 2);
             for (int i = 0; i <= filas; i++) {
                 if (index < islas.length) {
                     int xPos = xInicial + i * espaciadoX;
@@ -47,29 +44,54 @@ public class Juego extends InterfaceJuego {
             }
         }
     }
-	
-	/**
-	 * Durante el juego, el método tick() será ejecutado en cada instante y 
-	 * por lo tanto es el método más importante de esta clase. Aquí se debe 
-	 * actualizar el estado interno del juego para simular el paso del tiempo 
-	 * (ver el enunciado del TP para mayor detalle).
-	 */
-	public void tick()
-	{
-		this.entorno.colorFondo(Color.cyan);
-		
-		for (Isla isla : islas) {
-            entorno.dibujarRectangulo(isla.getX(), isla.getY(), isla.getAncho(), isla.getAlto(), 0, isla.getColor());
+    
+    public boolean estaSobreIsla(Pep pep) {
+        for (Isla isla : islas) {
+            if (isla != null &&
+                pep.getX() > isla.getX() - isla.getAncho() / 2 &&
+                pep.getX() < isla.getX() + isla.getAncho() / 2 &&
+                pep.getY() >= isla.getY() - isla.getAlto() / 2 &&
+                pep.getY() <= isla.getY() + isla.getAlto() / 2) {
+                return true;
+            }
         }
-		// Procesamiento de un instante de tiempo
-		// ...
-		
-	}
-	
-
-	@SuppressWarnings("unused")
-	public static void main(String[] args)
-	{
-		Juego juego = new Juego();
-	}
+        return false;
+    }
+    
+    public Isla[] getIslas() {
+        return this.islas;
+    }
+    
+    public void tick() {
+        // DIBUJADO DEL ENTORNO
+        this.entorno.colorFondo(Color.cyan);
+        
+        for (Isla isla : islas) {
+            if (isla != null) {
+                isla.dibujar(this.entorno);
+            }
+        }
+        
+        pep.dibujar(this.entorno);
+        pep.actualizar(this.islas);
+        
+        // FUNCIONES DE Pep
+        if (this.entorno.estaPresionada(this.entorno.TECLA_IZQUIERDA)) {
+            pep.moverIzquierda();
+        }
+        if (this.entorno.estaPresionada(this.entorno.TECLA_DERECHA)) {
+            pep.moverDerecha();
+        }
+        if (this.entorno.estaPresionada(this.entorno.TECLA_ESPACIO)) {
+            pep.saltar();
+        }
+        
+        // Procesamiento de un instante de tiempo
+        // ...
+    }
+    
+    public static void main(String[] args) {
+        Juego juego = new Juego();
+    }
 }
+

@@ -1,9 +1,10 @@
 package juego;
 
 import java.awt.Color;
+import entorno.Entorno;
 
 public class Isla {
-	private int x;
+    private int x;
     private int y;
     private int ancho;
     private int alto;
@@ -17,7 +18,6 @@ public class Isla {
         this.color = color;
     }
 
-    // Getters para acceder a las propiedades de la isla
     public int getX() {
         return x;
     }
@@ -36,5 +36,9 @@ public class Isla {
 
     public Color getColor() {
         return color;
+    }
+
+    public void dibujar(Entorno entorno) {
+        entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, this.color);
     }
 }
