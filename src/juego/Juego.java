@@ -6,25 +6,23 @@ import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego {
     // El objeto Entorno que controla el tiempo y otros
-    private static final int ANCHO_ENTORNO = 800;
-    private static final int ALTO_ENTORNO = 600;
     private Entorno entorno;
     private Isla[] islas;
     private Pep pep;
 
     public Juego() {
-        // Inicializa el objeto entorno
-        this.entorno = new Entorno(this, "Al rescate de los Gnomos - Grupo 8 - Igor - Abalde - Choque", ANCHO_ENTORNO, ALTO_ENTORNO);
+        // Inicializa los objetos
+        this.entorno = new Entorno(this, "Al rescate de los Gnomos - Grupo 8 - Igor - Abalde - Choque", 800, 600);
         this.islas = new Isla[15];
         this.pep = new Pep(400, 300, 30, 30, Color.RED);
-        crearIslas();
         
-        // Inicia el juego
+        // Crea el entorno
+        crearIslas();
         this.entorno.iniciar();
     }
     
     private void crearIslas() {
-        int xCentro = ANCHO_ENTORNO / 2;
+        int xCentro = 800 / 2;
         int yInicial = 100;
         int anchoIsla = 120;
         int altoIsla = 30;
