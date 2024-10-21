@@ -78,11 +78,13 @@ public class Juego extends InterfaceJuego {
             pep.moverIzquierda();
         }
         if (this.entorno.estaPresionada(this.entorno.TECLA_DERECHA)) {
-            pep.moverDerecha();
+            pep.moverDerecha(entorno);
         }
         if (this.entorno.estaPresionada(this.entorno.TECLA_ESPACIO)) {
             pep.saltar();
         }
+        
+        //basta milei hasta aca llegaste
         
         // Procesamiento de un instante de tiempo
         // ...
