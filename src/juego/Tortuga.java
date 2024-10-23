@@ -31,28 +31,25 @@ public class Tortuga {
 	}
 
 	public void mover(Entorno entorno) {
-		int limIZQ = this.ancho / 2;
-		int limDER = entorno.ancho() - limIZQ;
-
 		if (!enElAire) {
-			if (this.direccion && this.x >= limIZQ) {
-				this.x -= 2;
-			} else if (!this.direccion && this.x <= limDER) {
-				this.x += 2;
+			if(direccion) {
+				this.x += 1;
 			} else {
-				this.direccion = !this.direccion;
+				this.x += -1;
 			}
 		}
 	}
+	
+	
 
 	public void dibujar(Entorno e) {
 		e.dibujarRectangulo(x, y, ancho, alto, 0, color);
 	}
 
-	public void actualizar(Isla[] islas) {
+	public void actualizar(Isla[] islas, Entorno e) {
 		aplicarGravedad();
 		verificarColisiones(islas);
-		verificarLímiteSuelo();
+		mover(e);
 	}
 
 	private void aplicarGravedad() {
@@ -64,58 +61,38 @@ public class Tortuga {
 
 	private void verificarColisiones(Isla[] islas) {
 		boolean colisionAbajo = false;
-		boolean colisionArriba = false;
 
-		int limiteIzquierdoPersonaje = x - ancho / 2;
-		int limiteDerechoPersonaje = x + ancho / 2;
-		int limiteSuperiorPersonaje = y - alto / 2;
-		int limiteInferiorPersonaje = y + alto / 2;
+		int limIzq = this.x - this.ancho / 2;
+        int limDer = this.x + this.ancho / 2;
+        int limTop = this.y - this.alto / 2;
+        int limBot = this.y + this.alto / 2;
 
-		for (Isla isla : islas) {
-			if (isla != null) {
-				if (verificarColisionAbajo(isla, limiteIzquierdoPersonaje, limiteDerechoPersonaje,
-						limiteInferiorPersonaje, limiteSuperiorPersonaje)) {
-					y = isla.getY() - isla.getAlto() / 2 - alto / 2;
-					velocidadY = 0;
-					enElAire = false;
-					colisionAbajo = true;
-					break;
-				}
-				if (verificarColisionArriba(isla, limiteIzquierdoPersonaje, limiteDerechoPersonaje,
-						limiteInferiorPersonaje, limiteSuperiorPersonaje)) {
-					y = isla.getY() + isla.getAlto() / 2 + alto / 2;
-					velocidadY = 0;
-					colisionArriba = true;
-				}
-			}
-		}
-
-		if (colisionArriba) {
-			velocidadY = GRAVEDAD;
-		}
+        for (Isla isla : islas) {
+            if (isla != null) {
+                if (verificarColisionAbajo(isla, limIzq, limDer, limBot, limTop)) {
+                    this.y = isla.getY() - isla.getAlto() / 2 - this.alto / 2;
+                    this.velocidadY = 0;
+                    this.enElAire = false;
+                    colisionAbajo = true;
+                    if(limIzq < isla.getX() - isla.getAncho() / 2) {
+                    	direccion = true;
+                    }
+                    if(limDer > isla.getX() + isla.getAncho() / 2) {
+                    	direccion = false;
+                    }
+                    break;
+                }
+            }
+        }
 		if (!colisionAbajo) {
 			enElAire = true;
 		}
 	}
 
-	private boolean verificarColisionAbajo(Isla isla, int limiteIzquierdo, int limiteDerecho, int limiteInferior,
-			int limiteSuperior) {
-		return limiteDerecho > isla.getX() - isla.getAncho() / 2 && limiteIzquierdo < isla.getX() + isla.getAncho() / 2
-				&& limiteInferior >= isla.getY() - isla.getAlto() / 2 && limiteSuperior < isla.getY();
-	}
-
-	private boolean verificarColisionArriba(Isla isla, int limiteIzquierdo, int limiteDerecho, int limiteInferior,
-			int limiteSuperior) {
-		return limiteDerecho > isla.getX() - isla.getAncho() / 2 && limiteIzquierdo < isla.getX() + isla.getAncho() / 2
-				&& limiteSuperior <= isla.getY() + isla.getAlto() / 2 && limiteInferior > isla.getY();
-	}
-
-	private void verificarLímiteSuelo() {
-		if (y > 600) {
-			y = 600;
-			enElAire = false;
-		}
-	}
+	private boolean verificarColisionAbajo(Isla isla, int limIzq, int limDer, int limBot, int limTop) {
+        return limDer > isla.getX() - isla.getAncho() / 2 && limIzq < isla.getX() + isla.getAncho() / 2
+                && limBot >= isla.getY() - isla.getAlto() / 2 && limTop < isla.getY();
+    }
 
 	public int getX() {return x;}
 

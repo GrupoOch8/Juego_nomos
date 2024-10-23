@@ -60,7 +60,7 @@ public class Proyectil {
     	if ((direccion == 1 && this.coordenadaX >= 800) || (direccion == -1 && this.coordenadaX <= 0)) {
             return true;
         }
-        /*
+        
         for(Tortuga tortuga : tortugas) {
             if(direccion == -1) { 
                 if(this.coordenadaX - 5 == tortuga.getX() + tortuga.getAncho() && this.coordenadaY == tortuga.getY()) { 
@@ -72,7 +72,7 @@ public class Proyectil {
                 }
             }
         }
-        */
+        
         return false;
     }
 }

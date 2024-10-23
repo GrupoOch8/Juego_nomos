@@ -2,6 +2,7 @@ package juego;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.util.Random;
 
 import entorno.Entorno;
 import entorno.Herramientas;
@@ -19,6 +20,7 @@ public class Juego extends InterfaceJuego {
     private int gnomosRescatados;
     private int gnomosPerdidos;
     private int enemigosEliminados;
+	private Random random = new Random();
 
     public Juego() {
     	//inicializa el objeto entorno
@@ -34,6 +36,7 @@ public class Juego extends InterfaceJuego {
         //this.casaGnomo = Herramientas.cargarImagen(null);
         //this.fondo = Herramientas.cargarImagen("fondognomos.png");
         
+        crearTortugas();
         crearGnomos();
         crearIslas();
         this.entorno.iniciar();
@@ -49,6 +52,18 @@ public class Juego extends InterfaceJuego {
         entorno.escribirTexto("Gnomos rescatados: " + this.gnomosRescatados, 20, 40);
         entorno.escribirTexto("Gnomos perdidos: " + this.gnomosPerdidos, 20, 60);
         entorno.escribirTexto("Enemigos eliminados: " + this.enemigosEliminados, 20, 80);
+    }
+    
+    private void crearTortugas() {
+    	int xTortuga;
+    	int index = 0;
+    	while(index != tortugas.length) {
+    		xTortuga = random.nextInt();  
+        	if(xTortuga > 0 && xTortuga < 315 || xTortuga > 485 && xTortuga < 800) {
+        		tortugas[index] = new Tortuga(xTortuga, 0, 50, 50, Color.BLUE);
+        		index++;
+        	}
+    	}
     }
     
     private void crearGnomos() {}
@@ -92,6 +107,7 @@ public class Juego extends InterfaceJuego {
         mostrarEstadoJuego(entorno);
         
         for (Isla isla : islas) { isla.dibujar(this.entorno); }
+        for (Tortuga tortuga : tortugas) { tortuga.dibujar(entorno);}
         
         pep.dibujar(this.entorno);
         pep.actualizar(this.islas);
@@ -115,7 +131,9 @@ public class Juego extends InterfaceJuego {
     		}
     	}
     
+        
         for (Tortuga tortuga : tortugas) {
+        	tortuga.actualizar(islas, entorno);
         	if (tortuga != null && pep.colisionConTortuga(tortuga)) {
         		this.enemigosEliminados++;
     		}
