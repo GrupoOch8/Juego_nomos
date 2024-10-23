@@ -60,7 +60,7 @@ public class Juego extends InterfaceJuego {
     	while(index != tortugas.length) {
     		xTortuga = random.nextInt();  
         	if(xTortuga > 0 && xTortuga < 315 || xTortuga > 485 && xTortuga < 800) {
-        		tortugas[index] = new Tortuga(xTortuga, 0, 50, 50, Color.BLUE);
+        		tortugas[index] = new Tortuga(xTortuga, 0, 30, 30, Color.BLUE);
         		index++;
         	}
     	}
@@ -91,7 +91,7 @@ public class Juego extends InterfaceJuego {
     
     public boolean estaSobreIsla(Pep pep) {
         for (Isla isla : islas) {
-            if (isla != null &&
+            if (isla != null && pep!= null &&
                 pep.getX() > isla.getX() - isla.getAncho() / 2 &&
                 pep.getX() < isla.getX() + isla.getAncho() / 2 &&
                 pep.getY() >= isla.getY() - isla.getAlto() / 2 &&
@@ -109,19 +109,23 @@ public class Juego extends InterfaceJuego {
         for (Isla isla : islas) { isla.dibujar(this.entorno); }
         for (Tortuga tortuga : tortugas) { tortuga.dibujar(entorno);}
         
-        pep.dibujar(this.entorno);
-        pep.actualizar(this.islas);
-        
+        if(pep!=null) {
+        	pep.dibujar(this.entorno);
+            pep.actualizar(this.islas);
+        }
         if(bolaDeFuego != null) {
     		bolaDeFuego.dibujar(entorno);
     		bolaDeFuego.avanzar();
-    		if(bolaDeFuego.desaparecer(tortugas)) {
+    		if(bolaDeFuego.desaparecer(tortugas) == 1) {
     			this.bolaDeFuego = null;
+    		} else if(bolaDeFuego.desaparecer(tortugas) == 2) {
+    			this.bolaDeFuego = null;
+    			this.enemigosEliminados++;
     		}
     	}
         
         for (Gnomo gnomo : gnomos) {
-    		if (gnomo != null) { 
+    		if (gnomo != null && pep!= null) { 
     			if (pep.colisionConGnomo(gnomo)) {
     				this.gnomosRescatados++;
     			}
@@ -134,25 +138,29 @@ public class Juego extends InterfaceJuego {
         
         for (Tortuga tortuga : tortugas) {
         	tortuga.actualizar(islas, entorno);
-        	if (tortuga != null && pep.colisionConTortuga(tortuga)) {
-        		this.enemigosEliminados++;
+        	if (tortuga != null && pep!=null) {
+        		if(pep.colisionConTortuga(tortuga)) {
+        			pep = null;
+        		}
     		}
         }
         
         // FUNCIONES DE Pep
-        if (this.entorno.estaPresionada(this.entorno.TECLA_IZQUIERDA) || this.entorno.estaPresionada('A')) {
-            pep.moverIzquierda();
-        }
-        if (this.entorno.estaPresionada(this.entorno.TECLA_DERECHA) || this.entorno.estaPresionada('D')) {
-            pep.moverDerecha();
-        }
-        if (this.entorno.estaPresionada(this.entorno.TECLA_ARRIBA) || this.entorno.estaPresionada('W')) {
-            pep.saltar();
-        }
-        if (this.entorno.sePresionoBoton(this.entorno.BOTON_IZQUIERDO) || this.entorno.estaPresionada('C')) {
-        	if(bolaDeFuego == null && !pep.getEnElAire()) {
-        		this.bolaDeFuego = new Proyectil(pep.getX() + (pep.getAncho() / 2 + 10) * pep.getDireccion(), pep.getY(), pep.getDireccion());
-        	}	
+        if(pep!=null) {
+        	if (this.entorno.estaPresionada(this.entorno.TECLA_IZQUIERDA) || this.entorno.estaPresionada('A')) {
+                pep.moverIzquierda();
+            }
+            if (this.entorno.estaPresionada(this.entorno.TECLA_DERECHA) || this.entorno.estaPresionada('D')) {
+                pep.moverDerecha();
+            }
+            if (this.entorno.estaPresionada(this.entorno.TECLA_ARRIBA) || this.entorno.estaPresionada('W')) {
+                pep.saltar();
+            }
+            if (this.entorno.sePresionoBoton(this.entorno.BOTON_IZQUIERDO) || this.entorno.estaPresionada('C')) {
+            	if(bolaDeFuego == null && !pep.getEnElAire()) {
+            		this.bolaDeFuego = new Proyectil(pep.getX() + (pep.getAncho() / 2 + 10) * pep.getDireccion(), pep.getY(), pep.getDireccion());
+            	}	
+            }
         }
     }
     

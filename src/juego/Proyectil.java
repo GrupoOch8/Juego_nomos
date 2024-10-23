@@ -56,23 +56,27 @@ public class Proyectil {
      * @param tortugas Arreglo de tortugas para comprobar colisión.
      * @return true si el proyectil debe desaparecer, false si debe seguir activo.
      */
-    public boolean desaparecer(Tortuga[] tortugas) {
+    public int desaparecer(Tortuga[] tortugas) {
     	if ((direccion == 1 && this.coordenadaX >= 800) || (direccion == -1 && this.coordenadaX <= 0)) {
-            return true;
+            return 1;
         }
         
         for(Tortuga tortuga : tortugas) {
             if(direccion == -1) { 
-                if(this.coordenadaX - 5 == tortuga.getX() + tortuga.getAncho() && this.coordenadaY == tortuga.getY()) { 
-                    return true;
-                }
+            	if(this.coordenadaX > tortuga.getX()) {
+            		if(this.coordenadaX - 5 <= tortuga.getX() + tortuga.getAncho() && this.coordenadaY == tortuga.getY()) { 
+            			return 2;
+            		}
+            	}
             } else if(direccion == 1) {
-                if(this.coordenadaX + 5 == tortuga.getX() - tortuga.getAncho() && this.coordenadaY == tortuga.getY()) { 
-                    return true;
-                }
+            	if(this.coordenadaX < tortuga.getX()) {
+            		if(this.coordenadaX + 5 >= tortuga.getX() - tortuga.getAncho() && this.coordenadaY == tortuga.getY()) { 
+            			return 2;
+            		}
+            	}
             }
         }
         
-        return false;
+        return 0;
     }
 }
