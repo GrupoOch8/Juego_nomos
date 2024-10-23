@@ -94,6 +94,11 @@ public class Gnomo {
 	public double getAncho() {return ancho;}
 	
 	public double getAlto() {return alto;}
+
+	public boolean seHaPerdido() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 
 }

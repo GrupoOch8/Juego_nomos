@@ -218,4 +218,38 @@ public class Pep {
             this.coordenadaX = POSICION_RESET_X;
         }
     }
+    
+    public boolean colisionConGnomo(Gnomo gnomo) {
+        int pepIzquierda = this.coordenadaX - this.ancho / 2;
+        int pepDerecha = this.coordenadaX + this.ancho / 2;
+        int pepArriba = this.coordenadaY - this.alto / 2;
+        int pepAbajo = this.coordenadaY + this.alto / 2;
+
+        double gnomoIzquierda = gnomo.getX() - gnomo.getAncho() / 2;
+        double gnomoDerecha = gnomo.getX() + gnomo.getAncho() / 2;
+        double gnomoArriba = gnomo.getY() - gnomo.getAlto() / 2;
+        double gnomoAbajo = gnomo.getY() + gnomo.getAlto() / 2;
+
+        boolean colisionX = pepDerecha > gnomoIzquierda && pepIzquierda < gnomoDerecha;
+        boolean colisionY = pepAbajo > gnomoArriba && pepArriba < gnomoAbajo;
+
+        return colisionX && colisionY;
+    }
+    
+    public boolean colisionConTortuga(Tortuga tortuga) {
+        int pepIzquierda = this.coordenadaX - this.ancho / 2;
+        int pepDerecha = this.coordenadaX + this.ancho / 2;
+        int pepArriba = this.coordenadaY - this.alto / 2;
+        int pepAbajo = this.coordenadaY + this.alto / 2;
+
+        int tortugaIzquierda = tortuga.getX() - tortuga.getAncho() / 2;
+        int tortugaDerecha = tortuga.getX() + tortuga.getAncho() / 2;
+        int tortugaArriba = tortuga.getY() - tortuga.getAlto() / 2;
+        int tortugaAbajo = tortuga.getY() + tortuga.getAlto() / 2;
+
+        boolean colisionX = pepDerecha > tortugaIzquierda && pepIzquierda < tortugaDerecha;
+        boolean colisionY = pepAbajo > tortugaArriba && pepArriba < tortugaAbajo;
+
+        return colisionX && colisionY;
+    }
 }

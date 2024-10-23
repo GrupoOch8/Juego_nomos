@@ -14,23 +14,44 @@ public class Juego extends InterfaceJuego {
     private Isla[] islas;
     private Tortuga[] tortugas;
     private Gnomo[] gnomos;
-    private Image casaGnomo, fondo;
+    //private Image casaGnomo, fondo;
+    private int tiempoTranscurrido;
+    private int gnomosRescatados;
+    private int gnomosPerdidos;
+    private int enemigosEliminados;
 
     public Juego() {
     	//inicializa el objeto entorno
         this.entorno = new Entorno(this, "Al rescate de los Gnomos - Grupo 8 - Igor - Abalde - Choque", 800, 600);
-        this.pep = new Pep(50, 500, 30, 30, Color.RED);
         this.islas = new Isla[15];
-        this.gnomos = new Gnomo[0];
-        this.tortugas = new Tortuga[0];
-        this.casaGnomo = Herramientas.cargarImagen(null);
-        this.fondo = Herramientas.cargarImagen("fondognomos.png");
+        this.gnomos = new Gnomo[5];
+        this.tortugas = new Tortuga[5];
+        this.pep = new Pep(50, 500, 30, 30, Color.RED);
+        this.tiempoTranscurrido = 0;
+        this.gnomosRescatados = 0;
+        this.gnomosPerdidos = 0;
+        this.enemigosEliminados = 0;
+        //this.casaGnomo = Herramientas.cargarImagen(null);
+        //this.fondo = Herramientas.cargarImagen("fondognomos.png");
         
-
+        crearGnomos();
         crearIslas();
         this.entorno.iniciar();
     }
     
+    public void actualizarTiempo(int tiempoAnterior) {
+        this.tiempoTranscurrido += tiempoAnterior;
+    }
+    
+    public void mostrarEstadoJuego(Entorno entorno) {
+        entorno.cambiarFont("Arial", 18, Color.WHITE);
+        entorno.escribirTexto("Tiempo: " + this.tiempoTranscurrido + "s", 20, 20);
+        entorno.escribirTexto("Gnomos rescatados: " + this.gnomosRescatados, 20, 40);
+        entorno.escribirTexto("Gnomos perdidos: " + this.gnomosPerdidos, 20, 60);
+        entorno.escribirTexto("Enemigos eliminados: " + this.enemigosEliminados, 20, 80);
+    }
+    
+    private void crearGnomos() {}
     private void crearIslas() {
         int xCentro = 800 / 2;
         int yInicial = 100;
@@ -68,6 +89,7 @@ public class Juego extends InterfaceJuego {
     
     public void tick() {
         this.entorno.colorFondo(Color.cyan);
+        mostrarEstadoJuego(entorno);
         
         for (Isla isla : islas) { isla.dibujar(this.entorno); }
         
@@ -81,6 +103,23 @@ public class Juego extends InterfaceJuego {
     			this.bolaDeFuego = null;
     		}
     	}
+        
+        for (Gnomo gnomo : gnomos) {
+    		if (gnomo != null) { 
+    			if (pep.colisionConGnomo(gnomo)) {
+    				this.gnomosRescatados++;
+    			}
+    			if (gnomo.seHaPerdido()) {
+    				this.gnomosPerdidos++;
+    			}
+    		}
+    	}
+    
+        for (Tortuga tortuga : tortugas) {
+        	if (tortuga != null && pep.colisionConTortuga(tortuga)) {
+        		this.enemigosEliminados++;
+    		}
+        }
         
         // FUNCIONES DE Pep
         if (this.entorno.estaPresionada(this.entorno.TECLA_IZQUIERDA) || this.entorno.estaPresionada('A')) {
