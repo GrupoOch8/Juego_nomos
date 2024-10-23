@@ -4,126 +4,217 @@ import java.awt.Color;
 import entorno.Entorno;
 
 public class Pep {
-	// Variables
-	private int x;
-	private int y;
-	private int ancho;
-	private int alto;
-	private Color color;
-	private double velocidadY = 0;
-	private boolean enElAire = false;
-	private final double GRAVEDAD = 0.5;
-	private final double VELOCIDAD_SALTO = -10;
-	private final double VELOCIDAD_MOVIMIENTO = 5;
+    // Constantes
+    private static final double GRAVEDAD = 0.5;
+    private static final double VELOCIDAD_SALTO = -10;
+    private static final double VELOCIDAD_MOVIMIENTO = 5;
+    private static final int LIMITE_INFERIOR = 600;
+    private static final int LIMITE_IZQUIERDO = 0;
+    private static final int LIMITE_DERECHO = 800;
+    private static final int POSICION_RESET_X = 50;
+    private static final int POSICION_RESET_Y = 500;
 
-	// Constructor
-	public Pep(int x, int y, int ancho, int alto, Color color) {
-		this.x = x;
-		this.y = y;
-		this.ancho = ancho;
-		this.alto = alto;
-		this.color = color;
-	}
+    // Variables de instancia
+    private int coordenadaX;
+    private int coordenadaY;
+    private final int ancho;
+    private final int alto;
+    private final Color color;
+    private double velocidadY = 0;
+    private boolean enElAire = false;
+    private int direccion = 1;
 
-	// Funciones de Pep
-	public void moverIzquierda() {
-		int limIZQ = this.ancho / 2;
-		if (this.x >= limIZQ) {
-			this.x -= VELOCIDAD_MOVIMIENTO;
-		}
-	}
+    /**
+     * Constructor para inicializar a Pep.
+     * @param x Coordenada inicial en el eje X.
+     * @param y Coordenada inicial en el eje Y.
+     * @param ancho Ancho del personaje.
+     * @param alto Alto del personaje.
+     * @param color Color del personaje.
+     */
+    public Pep(int x, int y, int ancho, int alto, Color color) {
+        this.coordenadaX = x;
+        this.coordenadaY = y;
+        this.ancho = ancho;
+        this.alto = alto;
+        this.color = color;
+    }
 
-	public void moverDerecha(Entorno entorno) {
-		int limDER = entorno.ancho() - this.ancho / 2;
-		if (this.x <= limDER) {
-			this.x += VELOCIDAD_MOVIMIENTO;
-		}
-	}
+    /**
+     * Dibuja a Pep en la pantalla.
+     * @param e Entorno donde se dibuja el personaje.
+     */
+    public void dibujar(Entorno e) {
+        e.dibujarRectangulo(this.coordenadaX, this.coordenadaY, this.ancho, this.alto, 0, this.color);
+    }
 
-	public void saltar() {
-		if (!enElAire) {
-			velocidadY = VELOCIDAD_SALTO;
-			enElAire = true;
-		}
-	}
+    // Getters
+    public int getX() { return this.coordenadaX; }
+    public int getY() { return this.coordenadaY; }
+    public int getDireccion() { return this.direccion; }
+    public boolean getEnElAire() { return this.enElAire; }
+    public int getAncho() { return this.ancho; }
 
-	public void dibujar(Entorno e) {
-		e.dibujarRectangulo(x, y, ancho, alto, 0, color);
-	}
+    /**
+     * Mueve a Pep hacia la izquierda.
+     * Disminuye la coordenada X y ajusta la dirección.
+     */
+    public void moverIzquierda() {
+        this.coordenadaX -= VELOCIDAD_MOVIMIENTO;
+        this.direccion = -1;
+    }
 
-	public void actualizar(Isla[] islas) {
-		aplicarGravedad();
-		verificarColisiones(islas);
-		verificarLímiteSuelo();
-	}
+    /**
+     * Mueve a Pep hacia la derecha.
+     * Aumenta la coordenada X y ajusta la dirección.
+     */
+    public void moverDerecha() {
+        this.coordenadaX += VELOCIDAD_MOVIMIENTO;
+        this.direccion = 1;
+    }
 
-	private void aplicarGravedad() {
-		if (enElAire) {
-			velocidadY += GRAVEDAD;
-			y += velocidadY;
-		}
-	}
+    /**
+     * Hace que Pep salte si no está en el aire.
+     * Ajusta la velocidad vertical para simular el salto.
+     */
+    public void saltar() {
+        if (!this.enElAire) {
+            this.velocidadY = VELOCIDAD_SALTO;
+            this.enElAire = true;
+        }
+    }
 
-	private void verificarColisiones(Isla[] islas) {
-		boolean colisionAbajo = false;
-		boolean colisionArriba = false;
+    /**
+     * Actualiza la posición de Pep y aplica gravedad y colisiones.
+     * @param islas Arreglo de islas para verificar colisiones.
+     */
+    public void actualizar(Isla[] islas) {
+        aplicarGravedad();
+        verificarColisiones(islas);
+        verificarLimites();
+    }
 
-		int limiteIzquierdoPersonaje = x - ancho / 2;
-		int limiteDerechoPersonaje = x + ancho / 2;
-		int limiteSuperiorPersonaje = y - alto / 2;
-		int limiteInferiorPersonaje = y + alto / 2;
+    /**
+     * Aplica gravedad a Pep si está en el aire.
+     * Aumenta la velocidad vertical y ajusta la posición en Y.
+     */
+    private void aplicarGravedad() {
+        if (this.enElAire) {
+            this.velocidadY += GRAVEDAD;
+            this.coordenadaY += this.velocidadY;
+        }
+    }
 
-		for (Isla isla : islas) {
-			if (isla != null) {
-				if (verificarColisionAbajo(isla, limiteIzquierdoPersonaje, limiteDerechoPersonaje,
-						limiteInferiorPersonaje, limiteSuperiorPersonaje)) {
-					y = isla.getY() - isla.getAlto() / 2 - alto / 2;
-					velocidadY = 0;
-					enElAire = false;
-					colisionAbajo = true;
-					break;
-				}
-				if (verificarColisionArriba(isla, limiteIzquierdoPersonaje, limiteDerechoPersonaje,
-						limiteInferiorPersonaje, limiteSuperiorPersonaje)) {
-					y = isla.getY() + isla.getAlto() / 2 + alto / 2;
-					velocidadY = 0;
-					colisionArriba = true;
-				}
-			}
-		}
+    /**
+     * Verifica colisiones de Pep con las islas.
+     * Ajusta la posición de Pep si hay colisión y controla su movimiento.
+     * @param islas Arreglo de islas para verificar las colisiones.
+     */
+    private void verificarColisiones(Isla[] islas) {
+        boolean colisionAbajo = false;
+        boolean colisionArriba = false;
 
-		if (colisionArriba) {
-			velocidadY = GRAVEDAD;
-		}
-		if (!colisionAbajo) {
-			enElAire = true;
-		}
-	}
+        int limIzq = this.coordenadaX - this.ancho / 2;
+        int limDer = this.coordenadaX + this.ancho / 2;
+        int limTop = this.coordenadaY - this.alto / 2;
+        int limBot = this.coordenadaY + this.alto / 2;
 
-	private boolean verificarColisionAbajo(Isla isla, int limiteIzquierdo, int limiteDerecho, int limiteInferior,
-			int limiteSuperior) {
-		return limiteDerecho > isla.getX() - isla.getAncho() / 2 && limiteIzquierdo < isla.getX() + isla.getAncho() / 2
-				&& limiteInferior >= isla.getY() - isla.getAlto() / 2 && limiteSuperior < isla.getY();
-	}
+        for (Isla isla : islas) {
+            if (isla != null) {
+                if (verificarColisionAbajo(isla, limIzq, limDer, limBot, limTop)) {
+                    this.coordenadaY = isla.getY() - isla.getAlto() / 2 - this.alto / 2;
+                    this.velocidadY = 0;
+                    this.enElAire = false;
+                    colisionAbajo = true;
+                    break;
+                }
+                if (verificarColisionArriba(isla, limIzq, limDer, limBot, limTop)) {
+                    this.coordenadaY = isla.getY() + isla.getAlto() / 2 + this.alto / 2;
+                    this.velocidadY = 0;
+                    colisionArriba = true;
+                }
+                if (verificarColisionLateral(isla, limIzq, limDer, limBot, limTop)) {
+                    this.coordenadaX += VELOCIDAD_MOVIMIENTO * -direccion;
+                }
+            }
+        }
 
-	private boolean verificarColisionArriba(Isla isla, int limiteIzquierdo, int limiteDerecho, int limiteInferior,
-			int limiteSuperior) {
-		return limiteDerecho > isla.getX() - isla.getAncho() / 2 && limiteIzquierdo < isla.getX() + isla.getAncho() / 2
-				&& limiteSuperior <= isla.getY() + isla.getAlto() / 2 && limiteInferior > isla.getY();
-	}
+        if (colisionArriba) {
+            this.velocidadY = GRAVEDAD;
+        }
+        if (!colisionAbajo) {
+            this.enElAire = true;
+        }
+    }
 
-	private void verificarLímiteSuelo() {
-		if (y > 600) {
-			y = 600;
-			enElAire = false;
-		}
-	}
+    /**
+     * Verifica si Pep colisiona con una isla desde abajo.
+     * @param isla La isla a verificar.
+     * @param limiteIzquierdo Límite izquierdo de Pep.
+     * @param limiteDerecho Límite derecho de Pep.
+     * @param limiteInferior Límite inferior de Pep.
+     * @param limiteSuperior Límite superior de Pep.
+     * @return Verdadero si hay colisión desde abajo, falso si no.
+     */
+    private boolean verificarColisionAbajo(Isla isla, int limIzq, int limDer, int limBot, int limTop) {
+        return limDer > isla.getX() - isla.getAncho() / 2 && limIzq < isla.getX() + isla.getAncho() / 2
+                && limBot >= isla.getY() - isla.getAlto() / 2 && limTop < isla.getY();
+    }
 
-	public int getX() {
-		return x;
-	}
+    /**
+     * Verifica si Pep colisiona con una isla desde arriba.
+     * @param isla La isla a verificar.
+     * @param limiteIzquierdo Límite izquierdo de Pep.
+     * @param limiteDerecho Límite derecho de Pep.
+     * @param limiteInferior Límite inferior de Pep.
+     * @param limiteSuperior Límite superior de Pep.
+     * @return Verdadero si hay colisión desde arriba, falso si no.
+     */
+    private boolean verificarColisionArriba(Isla isla, int limIzq, int limDer, int limBot, int limTop) {
+        return limDer > isla.getX() - isla.getAncho() / 2 && limIzq < isla.getX() + isla.getAncho() / 2
+                && limTop <= isla.getY() + isla.getAlto() / 2 && limBot > isla.getY();
+    }
 
-	public int getY() {
-		return y;
-	}
+    /**
+     * Verifica si Pep colisiona lateralmente con una isla.
+     * @param isla La isla a verificar.
+     * @param limiteIzquierdo Límite izquierdo de Pep.
+     * @param limiteDerecho Límite derecho de Pep.
+     * @param limiteInferior Límite inferior de Pep.
+     * @param limiteSuperior Límite superior de Pep.
+     * @return Verdadero si hay colisión lateral, falso si no.
+     */
+    private boolean verificarColisionLateral(Isla isla, int limIzq, int limDer, int limBot, int limTop) {
+        boolean colisionLadoDerecho = limDer >= isla.getX() - isla.getAncho() / 2 
+                                      && limIzq < isla.getX() 
+                                      && limBot > isla.getY() - isla.getAlto() / 2 
+                                      && limTop < isla.getY() + isla.getAlto() / 2;
+
+        boolean colisionLadoIzquierdo = limIzq <= isla.getX() + isla.getAncho() / 2 
+                                        && limDer > isla.getX() 
+                                        && limBot > isla.getY() - isla.getAlto() / 2 
+                                        && limTop < isla.getY() + isla.getAlto() / 2;
+
+        return colisionLadoDerecho || colisionLadoIzquierdo;
+    }
+
+    /**
+     * Verifica si Pep ha llegado a los límites de la pantalla y ajusta su posición en consecuencia.
+     */
+    private void verificarLimites() {
+        int limIzq = this.coordenadaX - this.ancho / 2;
+        int limDer = this.coordenadaX + this.ancho / 2;
+        int limBot = this.coordenadaY + this.alto / 2;
+
+        if (limIzq <= LIMITE_IZQUIERDO) {
+            this.coordenadaX += VELOCIDAD_MOVIMIENTO;
+        }
+        if (limDer >= LIMITE_DERECHO) {
+            this.coordenadaX -= VELOCIDAD_MOVIMIENTO;
+        }
+        if (limBot >= LIMITE_INFERIOR) {
+            this.coordenadaY = POSICION_RESET_Y;
+            this.coordenadaX = POSICION_RESET_X;
+        }
+    }
 }

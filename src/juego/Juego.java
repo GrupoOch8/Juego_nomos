@@ -5,18 +5,17 @@ import entorno.Entorno;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego {
-    // El objeto Entorno que controla el tiempo y otros
     private Entorno entorno;
     private Isla[] islas;
     private Pep pep;
+    private Proyectil bolaDeFuego = null;
+    private Tortuga[] tortugas;
 
     public Juego() {
-        // Inicializa los objetos
         this.entorno = new Entorno(this, "Al rescate de los Gnomos - Grupo 8 - Igor - Abalde - Choque", 800, 600);
         this.islas = new Isla[15];
-        this.pep = new Pep(400, 300, 30, 30, Color.RED);
-        
-        // Crea el entorno
+        this.pep = new Pep(50, 500, 30, 30, Color.RED);
+
         crearIslas();
         this.entorno.iniciar();
     }
@@ -56,42 +55,42 @@ public class Juego extends InterfaceJuego {
         return false;
     }
     
-    public Isla[] getIslas() {
-        return this.islas;
-    }
-    
     public void tick() {
-        // DIBUJADO DEL ENTORNO
         this.entorno.colorFondo(Color.cyan);
         
-        for (Isla isla : islas) {
-            if (isla != null) {
-                isla.dibujar(this.entorno);
-            }
-        }
+        for (Isla isla : islas) { isla.dibujar(this.entorno); }
         
         pep.dibujar(this.entorno);
         pep.actualizar(this.islas);
         
+        if(bolaDeFuego != null) {
+    		bolaDeFuego.dibujar(entorno);
+    		bolaDeFuego.avanzar();
+    		if(bolaDeFuego.desaparecer(tortugas)) {
+    			this.bolaDeFuego = null;
+    		}
+    	}
+        
         // FUNCIONES DE Pep
-        if (this.entorno.estaPresionada(this.entorno.TECLA_IZQUIERDA)) {
+        if (this.entorno.estaPresionada(this.entorno.TECLA_IZQUIERDA) || this.entorno.estaPresionada('A')) {
             pep.moverIzquierda();
         }
-        if (this.entorno.estaPresionada(this.entorno.TECLA_DERECHA)) {
-            pep.moverDerecha(entorno);
+        if (this.entorno.estaPresionada(this.entorno.TECLA_DERECHA) || this.entorno.estaPresionada('D')) {
+            pep.moverDerecha();
         }
-        if (this.entorno.estaPresionada(this.entorno.TECLA_ESPACIO)) {
+        if (this.entorno.estaPresionada(this.entorno.TECLA_ARRIBA) || this.entorno.estaPresionada('W')) {
             pep.saltar();
         }
-        
-        //basta milei hasta aca llegaste
-        
-        // Procesamiento de un instante de tiempo
-        // ...
+        if (this.entorno.sePresionoBoton(this.entorno.BOTON_IZQUIERDO) || this.entorno.estaPresionada('C')) {
+        	if(bolaDeFuego == null && !pep.getEnElAire()) {
+        		this.bolaDeFuego = new Proyectil(pep.getX() + (pep.getAncho() / 2 + 10) * pep.getDireccion(), pep.getY(), pep.getDireccion());
+        	}	
+        }
     }
     
     public static void main(String[] args) {
         Juego juego = new Juego();
     }
 }
+
 
