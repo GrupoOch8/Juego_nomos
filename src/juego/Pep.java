@@ -54,6 +54,7 @@ public class Pep {
     public int getDireccion() { return this.direccion; }
     public boolean getEnElAire() { return this.enElAire; }
     public int getAncho() { return this.ancho; }
+    public int getAlto() {return this.alto;}
 
     /**
      * Mueve a Pep hacia la izquierda.

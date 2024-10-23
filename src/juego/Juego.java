@@ -1,20 +1,31 @@
 package juego;
 
 import java.awt.Color;
+import java.awt.Image;
+
 import entorno.Entorno;
+import entorno.Herramientas;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego {
     private Entorno entorno;
-    private Isla[] islas;
     private Pep pep;
     private Proyectil bolaDeFuego = null;
+    private Isla[] islas;
     private Tortuga[] tortugas;
+    private Gnomo[] gnomos;
+    private Image casaGnomo, fondo;
 
     public Juego() {
+    	//inicializa el objeto entorno
         this.entorno = new Entorno(this, "Al rescate de los Gnomos - Grupo 8 - Igor - Abalde - Choque", 800, 600);
-        this.islas = new Isla[15];
         this.pep = new Pep(50, 500, 30, 30, Color.RED);
+        this.islas = new Isla[15];
+        this.gnomos = new Gnomo[0];
+        this.tortugas = new Tortuga[0];
+        this.casaGnomo = Herramientas.cargarImagen(null);
+        this.fondo = Herramientas.cargarImagen("fondognomos.png");
+        
 
         crearIslas();
         this.entorno.iniciar();

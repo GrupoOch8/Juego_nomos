@@ -117,11 +117,12 @@ public class Tortuga {
 		}
 	}
 
-	public int getX() {
-		return x;
-	}
+	public int getX() {return x;}
 
-	public int getY() {
-		return y;
-	}
+	public int getY() {return y;}
+	
+	public int getAlto() {return alto;}
+	
+	public int getAncho() {return ancho;}
+	
 }
