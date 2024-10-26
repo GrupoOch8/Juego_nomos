@@ -3,6 +3,8 @@ package juego;
 import java.awt.Color;
 import java.util.Random;
 
+import entorno.Entorno;
+
 public class Gnomo {
 	
 	private double x;
@@ -11,10 +13,11 @@ public class Gnomo {
 	private double alto;
 	private Color color;
 	private double velocidadY = 0;
-	private double movimiento;
-	private boolean enElAire = false; 
+	private boolean movimiento;
+	private boolean enElAire = false;
 	private final double GRAVEDAD = 0.5;
 	private Random random = new Random();
+	private double coordenadaY;
 	
 	
 	public Gnomo (int x, int y, int ancho, int alto, Color color) {
@@ -23,15 +26,37 @@ public class Gnomo {
 		this.ancho = ancho;
 		this.alto = alto;
 		this.color = color;
-		this.movimiento = Math.random();
+		this.movimiento = false;
 	}
 	
-	public void mover () {
-		x =  movimiento;
+    //dibuja al gnomo en el entorno
+	public void dibujarGnomo(Entorno e) {
+		e.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, this.color);
+		
+	}
+    //cuando el gnomo esta en contacto con la isla ejecuta el movimiento
+	public void mover (boolean movimiento) {
+
 	}
 	
-	public void direccion () {
-		movimiento = -movimiento;
+	//usa un booleano para cambiar el movimiento de manera aleatoria
+	public void cambiarMovimiento () {
+		this.movimiento = Math.random()<5;
+	}
+	
+	//altera la posicion del objeto en el eje Y cuando "esta en el aire" 
+	private void aplicarGravedad() {
+        if (this.enElAire) {
+            this.velocidadY += GRAVEDAD;
+            this.coordenadaY += this.velocidadY;
+        }
+	}
+	//verifica si el gnomo esta en contacto con una isla o no
+	public void chocaConIsla(Isla[] islas) {
+		boolean choca = false;
+		
+		double LimiteGnomoInf = getY() + getAlto() / 2;
+		
 	}
 	
 	public void coalisionPep(Pep pep) {
@@ -94,9 +119,11 @@ public class Gnomo {
 	public double getAncho() {return ancho;}
 	
 	public double getAlto() {return alto;}
-
+	
+	public boolean getenElAire() { return enElAire;}
+	
 	public boolean seHaPerdido() {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 	
