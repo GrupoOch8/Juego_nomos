@@ -54,10 +54,10 @@ public class Juego extends InterfaceJuego {
     }
     public void mostrarEstadoJuego(Entorno entorno) {
         entorno.cambiarFont("Arial", 18, Color.BLACK);
-        entorno.escribirTexto("Tiempo: " + this.tiempoTranscurrido + "s", 20, 20);
-        entorno.escribirTexto("Gnomos rescatados: " + this.gnomosRescatados, 20, 40);
-        entorno.escribirTexto("Gnomos perdidos: " + this.gnomosPerdidos, 20, 60);
-        entorno.escribirTexto("Enemigos eliminados: " + this.enemigosEliminados, 20, 80);
+        entorno.escribirTexto("TIEMPO: " + this.tiempoTranscurrido + "s", 50, 20);
+        entorno.escribirTexto("PERDIDOS: " + this.gnomosPerdidos, 200, 20);
+        entorno.escribirTexto("SALVADOS: " + this.gnomosRescatados, 475, 20);
+        entorno.escribirTexto("ELIMINADOS: " + this.enemigosEliminados, 625, 20);
     }
     //-------------- MUESTRA LOS CARTELES--------------
     public void mostrarCartelPerdiste(Entorno e) {
