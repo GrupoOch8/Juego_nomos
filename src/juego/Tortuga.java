@@ -14,12 +14,10 @@ public class Tortuga {
 	private Color color;
 	private double velocidadY = 0;
 	private boolean enElAire = false;
-	private boolean direccion; // verdadero = izquierda, falso = derecha
+	private boolean direccion;
 	private final double GRAVEDAD = 0.5;
 	private Random random = new Random();
 
-	
-	// quiero dejar la carrera
 	public Tortuga(int x, int y, int ancho, int alto, Color color) {
 		this.x = x;
 		this.y = y;
@@ -39,27 +37,16 @@ public class Tortuga {
 			}
 		}
 	}
-	
-	
-
 	public void dibujar(Entorno e) {
 		e.dibujarRectangulo(x, y, ancho, alto, 0, color);
 	}
-
-	public void actualizar(Isla[] islas, Entorno e) {
-		aplicarGravedad();
-		verificarColisiones(islas);
-		mover(e);
-	}
-
-	private void aplicarGravedad() {
+	public void aplicarGravedad() {
 		if (enElAire) {
 			velocidadY += GRAVEDAD;
 			y += velocidadY;
 		}
 	}
-
-	private void verificarColisiones(Isla[] islas) {
+	public void verificarColisiones(Isla[] islas) {
 		boolean colisionAbajo = false;
 
 		int limIzq = this.x - this.ancho / 2;
@@ -88,18 +75,38 @@ public class Tortuga {
 			enElAire = true;
 		}
 	}
-
 	private boolean verificarColisionAbajo(Isla isla, int limIzq, int limDer, int limBot, int limTop) {
         return limDer > isla.getX() - isla.getAncho() / 2 && limIzq < isla.getX() + isla.getAncho() / 2
                 && limBot >= isla.getY() - isla.getAlto() / 2 && limTop < isla.getY();
     }
 
 	public int getX() {return x;}
-
 	public int getY() {return y;}
-	
 	public int getAlto() {return alto;}
-	
 	public int getAncho() {return ancho;}
+	public boolean getEnElAire() { return enElAire;}
+	
+	public boolean colisionConBolaDeFuego(Proyectil bolaDeFuego) {
+        int tortugaIzquierda = this.x - this.ancho / 2;
+        int tortugaDerecha = this.x + this.ancho / 2;
+
+        int bolaDeFuegoIzquierda = bolaDeFuego.getX() - bolaDeFuego.getAncho() / 2;
+        int bolaDeFuegoDerecha = bolaDeFuego.getX() + bolaDeFuego.getAncho() / 2;
+        boolean colisionX = false;
+
+        if(getY()==bolaDeFuego.getY()) {
+        	colisionX = tortugaDerecha > bolaDeFuegoIzquierda && tortugaIzquierda < bolaDeFuegoDerecha;
+        }
+        return colisionX;
+    }
+	
+	public void respawnear() {
+		int xTortuga = random.nextInt(800);
+		while(!(xTortuga > 85 && xTortuga < 315 || xTortuga > 485 && xTortuga < 800)) {
+			xTortuga = random.nextInt(800);
+		}
+		x = xTortuga;
+		y = 0;
+	}
 	
 }

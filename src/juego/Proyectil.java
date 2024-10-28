@@ -30,9 +30,10 @@ public class Proyectil {
      * Devuelve la coordenada X actual del proyectil.
      * @return Coordenada X del proyectil.
      */
-    public int getX() { 
-        return this.coordenadaX; 
-    }
+    public int getX() { return this.coordenadaX; }
+    public int getY() { return this.coordenadaY; }
+    public int getAncho() { return ANCHO; }
+    public int getAlto() { return ALTO; }
 
     /**
      * Dibuja el proyectil en el entorno.
@@ -56,27 +57,7 @@ public class Proyectil {
      * @param tortugas Arreglo de tortugas para comprobar colisión.
      * @return true si el proyectil debe desaparecer, false si debe seguir activo.
      */
-    public int desaparecer(Tortuga[] tortugas) {
-    	if ((direccion == 1 && this.coordenadaX >= 800) || (direccion == -1 && this.coordenadaX <= 0)) {
-            return 1;
-        }
-        
-        for(Tortuga tortuga : tortugas) {
-            if(direccion == -1) { 
-            	if(this.coordenadaX > tortuga.getX()) {
-            		if(this.coordenadaX - 5 <= tortuga.getX() + tortuga.getAncho() && this.coordenadaY == tortuga.getY()) { 
-            			return 2;
-            		}
-            	}
-            } else if(direccion == 1) {
-            	if(this.coordenadaX < tortuga.getX()) {
-            		if(this.coordenadaX + 5 >= tortuga.getX() - tortuga.getAncho() && this.coordenadaY == tortuga.getY()) { 
-            			return 2;
-            		}
-            	}
-            }
-        }
-        
-        return 0;
+    public boolean desaparecer() {
+    	return (direccion == 1 && this.coordenadaX >= 800) || (direccion == -1 && this.coordenadaX <= 0);   
     }
 }

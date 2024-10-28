@@ -71,8 +71,8 @@ public class Juego extends InterfaceJuego {
     	int xTortuga;
     	int index = 0;
     	while(index != tortugas.length) {
-    		xTortuga = random.nextInt();  
-        	if(xTortuga > 0 && xTortuga < 315 || xTortuga > 485 && xTortuga < 800) {
+    		xTortuga = random.nextInt(800);  
+        	if(xTortuga > 85 && xTortuga < 315 || xTortuga > 485 && xTortuga < 800) {
         		tortugas[index] = new Tortuga(xTortuga, 0, 30, 30, Color.BLUE);
         		index++;
         	}
@@ -142,8 +142,37 @@ public class Juego extends InterfaceJuego {
             }
     	}
     }
-    public void actualizarTortugas() {}
+    public void actualizarTortugas() {
+    	for(int index = 0; index < tortugas.length; index ++) {
+    		if(tortugas[index]!=null) {
+    			Tortuga tortuga = tortugas[index];
+    			tortuga.dibujar(entorno);
+    			tortuga.verificarColisiones(islas);
+    			if(tortuga.getEnElAire()) {
+    				tortuga.aplicarGravedad();
+    			} else {
+    				tortuga.mover(entorno);
+    			}
+    			if(bolaDeFuego != null) {
+    				if(tortuga.colisionConBolaDeFuego(bolaDeFuego)) {
+    					tortuga.respawnear();
+    					this.enemigosEliminados++;
+    					bolaDeFuego = null;
+    				}
+    			}
+    		}
+    	}
+    }
     public void actualizarGnomos() {}
+    public void actualizarBolaDeFuego() {
+    	if(bolaDeFuego!=null) {
+    		bolaDeFuego.dibujar(entorno);
+    		bolaDeFuego.avanzar();
+    		if(bolaDeFuego.desaparecer()) {
+    			this.bolaDeFuego = null;
+    		}
+    	}
+    }
     
     public boolean estaSobreIsla(Pep pep) {
         for (Isla isla : islas) {
@@ -172,28 +201,12 @@ public class Juego extends InterfaceJuego {
         
         //MUESTRA LAS ISLAS
         for (Isla isla : islas) { isla.dibujar(this.entorno); }
-        for (Tortuga tortuga : tortugas) { tortuga.dibujar(entorno);}
         
         //ACTUALIZA LOS OBJETOS
         actualizarPep();
         actualizarTortugas();
         actualizarGnomos();
-
-        if(bolaDeFuego != null) {
-    		bolaDeFuego.dibujar(entorno);
-    		bolaDeFuego.avanzar();
-    		if(bolaDeFuego.desaparecer(tortugas) == 1) {
-    			this.bolaDeFuego = null;
-    		} else if(bolaDeFuego.desaparecer(tortugas) == 2) {
-    			this.bolaDeFuego = null;
-    			this.enemigosEliminados++;
-    		}
-    	}
-    
-        
-        for (Tortuga tortuga : tortugas) {
-        	tortuga.actualizar(islas, entorno);
-        }
+        actualizarBolaDeFuego();
     }
     
     public static void main(String[] args) {
