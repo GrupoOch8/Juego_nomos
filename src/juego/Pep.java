@@ -11,15 +11,13 @@ public class Pep {
     private static final int LIMITE_INFERIOR = 600;
     private static final int LIMITE_IZQUIERDO = 0;
     private static final int LIMITE_DERECHO = 800;
-    private static final int POSICION_RESET_X = 50;
-    private static final int POSICION_RESET_Y = 500;
 
     // Variables de instancia
-    private int coordenadaX;
+    public int coordenadaX;
     private int coordenadaY;
-    private final int ancho;
-    private final int alto;
-    private final Color color;
+    private int ancho;
+    private int alto;
+    private Color color;
     private double velocidadY = 0;
     private boolean enElAire = false;
     private int direccion = 1;
@@ -45,7 +43,7 @@ public class Pep {
      * @param e Entorno donde se dibuja el personaje.
      */
     public void dibujar(Entorno e) {
-        e.dibujarRectangulo(this.coordenadaX, this.coordenadaY, this.ancho, this.alto, 0, this.color);
+        e.dibujarRectangulo(coordenadaX, coordenadaY, ancho, alto, 0, color);
     }
 
     // Getters
@@ -80,26 +78,17 @@ public class Pep {
      */
     public void saltar() {
         if (!this.enElAire) {
-            this.velocidadY = VELOCIDAD_SALTO;
+            this.velocidadY = VELOCIDAD_SALTO; // -10
             this.enElAire = true;
         }
     }
 
-    /**
-     * Actualiza la posición de Pep y aplica gravedad y colisiones.
-     * @param islas Arreglo de islas para verificar colisiones.
-     */
-    public void actualizar(Isla[] islas) {
-        aplicarGravedad();
-        verificarColisiones(islas);
-        verificarLimites();
-    }
 
     /**
      * Aplica gravedad a Pep si está en el aire.
      * Aumenta la velocidad vertical y ajusta la posición en Y.
      */
-    private void aplicarGravedad() {
+    public void aplicarGravedad() {
         if (this.enElAire) {
             this.velocidadY += GRAVEDAD;
             this.coordenadaY += this.velocidadY;
@@ -111,7 +100,7 @@ public class Pep {
      * Ajusta la posición de Pep si hay colisión y controla su movimiento.
      * @param islas Arreglo de islas para verificar las colisiones.
      */
-    private void verificarColisiones(Isla[] islas) {
+    public void verificarColisiones(Isla[] islas) {
         boolean colisionAbajo = false;
         boolean colisionArriba = false;
 
@@ -202,10 +191,9 @@ public class Pep {
     /**
      * Verifica si Pep ha llegado a los límites de la pantalla y ajusta su posición en consecuencia.
      */
-    private void verificarLimites() {
+    public void verificarLimites() {
         int limIzq = this.coordenadaX - this.ancho / 2;
         int limDer = this.coordenadaX + this.ancho / 2;
-        int limBot = this.coordenadaY + this.alto / 2;
 
         if (limIzq <= LIMITE_IZQUIERDO) {
             this.coordenadaX += VELOCIDAD_MOVIMIENTO;
@@ -213,10 +201,14 @@ public class Pep {
         if (limDer >= LIMITE_DERECHO) {
             this.coordenadaX -= VELOCIDAD_MOVIMIENTO;
         }
-        if (limBot >= LIMITE_INFERIOR) {
-            this.coordenadaY = POSICION_RESET_Y;
-            this.coordenadaX = POSICION_RESET_X;
-        }
+    }
+    
+    public boolean cayoAlVacio() {
+    	if(coordenadaY >= LIMITE_INFERIOR) {
+    		return true;
+    	}
+    	return false;
+    	
     }
     
     public boolean colisionConGnomo(Gnomo gnomo) {

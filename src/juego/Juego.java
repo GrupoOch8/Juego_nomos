@@ -20,6 +20,7 @@ public class Juego extends InterfaceJuego {
     private int gnomosRescatados;
     private int gnomosPerdidos;
     private int enemigosEliminados;
+    private boolean juegoTerminado = false;
 	private Random random = new Random();
 
     public Juego() {
@@ -42,10 +43,10 @@ public class Juego extends InterfaceJuego {
         this.entorno.iniciar();
     }
     
+    // ------------- CONTROLA EL MARCADOR -----------------------
     public void actualizarTiempo(int tiempoAnterior) {
         this.tiempoTranscurrido += tiempoAnterior;
     }
-    
     public void mostrarEstadoJuego(Entorno entorno) {
         entorno.cambiarFont("Arial", 18, Color.WHITE);
         entorno.escribirTexto("Tiempo: " + this.tiempoTranscurrido + "s", 20, 20);
@@ -53,7 +54,14 @@ public class Juego extends InterfaceJuego {
         entorno.escribirTexto("Gnomos perdidos: " + this.gnomosPerdidos, 20, 60);
         entorno.escribirTexto("Enemigos eliminados: " + this.enemigosEliminados, 20, 80);
     }
-    
+    //-------------- MUESTRA EL CARTEL DE GAME OVER--------------
+    public void mostrarCartel(Entorno e) {
+    	entorno.colorFondo(Color.BLACK);
+    	entorno.cambiarFont("Arial", 58, Color.RED);
+    	entorno.escribirTexto("GAME OVER", 220, 300);
+    }
+    //-----------------------------------------------------------
+    //-------------- CREA LOS OBJETOS----------------------------
     private void crearTortugas() {
     	int xTortuga;
     	int index = 0;
@@ -65,7 +73,6 @@ public class Juego extends InterfaceJuego {
         	}
     	}
     }
-    
     private void crearGnomos() {}
     private void crearIslas() {
         int xCentro = 800 / 2;
@@ -88,6 +95,51 @@ public class Juego extends InterfaceJuego {
             }
         }
     }
+    //-----------------------------------------------------------
+    public void actualizarPep() {
+    	if(pep != null) {
+    		pep.dibujar(entorno);
+    		pep.verificarColisiones(islas);
+    		pep.verificarLimites();
+    		if (this.entorno.estaPresionada(this.entorno.TECLA_IZQUIERDA) || this.entorno.estaPresionada('A')) {
+                pep.moverIzquierda();
+            }
+            if (this.entorno.estaPresionada(this.entorno.TECLA_DERECHA) || this.entorno.estaPresionada('D')) {
+                pep.moverDerecha();
+            }
+            if (this.entorno.estaPresionada(this.entorno.TECLA_ARRIBA) || this.entorno.estaPresionada('W')) {
+                pep.saltar();
+            }
+            if (this.entorno.sePresionoBoton(this.entorno.BOTON_IZQUIERDO) || this.entorno.estaPresionada('C')) {
+            	if(bolaDeFuego == null && !pep.getEnElAire()) {
+            		this.bolaDeFuego = new Proyectil(pep.getX() + (pep.getAncho() / 2 + 10) * pep.getDireccion(), pep.getY(), pep.getDireccion());
+            	}	
+            }
+            if(pep.getEnElAire()) { pep.aplicarGravedad(); }
+            for(Tortuga tortuga : tortugas) {
+            	if(pep.colisionConTortuga(tortuga)) {
+            		System.out.println(juegoTerminado);
+            		this.juegoTerminado = true;
+            		System.out.println(juegoTerminado);
+            		pep = null;
+            		return;
+            	}
+            }
+            for(Gnomo gnomo : gnomos) {
+            	if(gnomo != null) {
+            		if(pep.colisionConGnomo(gnomo)) {
+            			gnomosRescatados++;
+            		}
+            	}
+            }
+            if(pep.cayoAlVacio()) {
+                juegoTerminado = true;
+            }
+    	}
+    }
+    public void actualizarTortugas() {}
+    public void actualizarGnomos() {}
+    //
     
     public boolean estaSobreIsla(Pep pep) {
         for (Isla isla : islas) {
@@ -103,16 +155,25 @@ public class Juego extends InterfaceJuego {
     }
     
     public void tick() {
+    	
+    	if(juegoTerminado) {
+    		mostrarCartel(entorno);
+    		return;
+    	}
+    	
+    	//MUESTRA EL FONDO
         this.entorno.colorFondo(Color.cyan);
         mostrarEstadoJuego(entorno);
         
+        //MUESTRA LAS ISLAS
         for (Isla isla : islas) { isla.dibujar(this.entorno); }
         for (Tortuga tortuga : tortugas) { tortuga.dibujar(entorno);}
         
-        if(pep!=null) {
-        	pep.dibujar(this.entorno);
-            pep.actualizar(this.islas);
-        }
+        //ACTUALIZA LOS OBJETOS
+        actualizarPep();
+        actualizarTortugas();
+        actualizarGnomos();
+
         if(bolaDeFuego != null) {
     		bolaDeFuego.dibujar(entorno);
     		bolaDeFuego.avanzar();
@@ -123,44 +184,10 @@ public class Juego extends InterfaceJuego {
     			this.enemigosEliminados++;
     		}
     	}
-        
-        for (Gnomo gnomo : gnomos) {
-    		if (gnomo != null && pep!= null) { 
-    			if (pep.colisionConGnomo(gnomo)) {
-    				this.gnomosRescatados++;
-    			}
-    			if (gnomo.seHaPerdido()) {
-    				this.gnomosPerdidos++;
-    			}
-    		}
-    	}
     
         
         for (Tortuga tortuga : tortugas) {
         	tortuga.actualizar(islas, entorno);
-        	if (tortuga != null && pep!=null) {
-        		if(pep.colisionConTortuga(tortuga)) {
-        			pep = null;
-        		}
-    		}
-        }
-        
-        // FUNCIONES DE Pep
-        if(pep!=null) {
-        	if (this.entorno.estaPresionada(this.entorno.TECLA_IZQUIERDA) || this.entorno.estaPresionada('A')) {
-                pep.moverIzquierda();
-            }
-            if (this.entorno.estaPresionada(this.entorno.TECLA_DERECHA) || this.entorno.estaPresionada('D')) {
-                pep.moverDerecha();
-            }
-            if (this.entorno.estaPresionada(this.entorno.TECLA_ARRIBA) || this.entorno.estaPresionada('W')) {
-                pep.saltar();
-            }
-            if (this.entorno.sePresionoBoton(this.entorno.BOTON_IZQUIERDO) || this.entorno.estaPresionada('C')) {
-            	if(bolaDeFuego == null && !pep.getEnElAire()) {
-            		this.bolaDeFuego = new Proyectil(pep.getX() + (pep.getAncho() / 2 + 10) * pep.getDireccion(), pep.getY(), pep.getDireccion());
-            	}	
-            }
         }
     }
     
