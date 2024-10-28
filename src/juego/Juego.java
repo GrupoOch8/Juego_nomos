@@ -49,7 +49,6 @@ public class Juego extends InterfaceJuego {
         contadorTick++;
         if(contadorTick >=60) {
         	this.tiempoTranscurrido++;
-        	gnomosRescatados++;
         	contadorTick=0;
         }
     }
@@ -211,7 +210,7 @@ public class Juego extends InterfaceJuego {
     	if(juegoTerminado || gnomosPerdidos == 10) {
     		mostrarCartelPerdiste(entorno);
     		return;
-    	} else if(gnomosRescatados == 1) {
+    	} else if(gnomosRescatados == 10) {
     		mostrarCartelGanaste(entorno);
     		return;
     	}
