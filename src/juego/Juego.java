@@ -100,7 +100,12 @@ public class Juego extends InterfaceJuego {
             }
         }
     }
-    //-----------------------------------------------------------
+    //---------------ACTUALIZA LOS OBJETOS----------------------------
+    public void actualizarIslas() {
+    	for(Isla isla : islas) {
+    		isla.dibujar(entorno);
+    	}
+    }
     public void actualizarPep() {
     	if(pep != null) {
     		pep.dibujar(entorno);
@@ -199,10 +204,8 @@ public class Juego extends InterfaceJuego {
         mostrarEstadoJuego(entorno);
         actualizarTiempo();
         
-        //MUESTRA LAS ISLAS
-        for (Isla isla : islas) { isla.dibujar(this.entorno); }
-        
         //ACTUALIZA LOS OBJETOS
+        actualizarIslas();
         actualizarPep();
         actualizarTortugas();
         actualizarGnomos();
