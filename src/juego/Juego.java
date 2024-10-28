@@ -49,6 +49,7 @@ public class Juego extends InterfaceJuego {
         contadorTick++;
         if(contadorTick >=60) {
         	this.tiempoTranscurrido++;
+        	gnomosRescatados++;
         	contadorTick=0;
         }
     }
@@ -59,11 +60,22 @@ public class Juego extends InterfaceJuego {
         entorno.escribirTexto("Gnomos perdidos: " + this.gnomosPerdidos, 20, 60);
         entorno.escribirTexto("Enemigos eliminados: " + this.enemigosEliminados, 20, 80);
     }
-    //-------------- MUESTRA EL CARTEL DE GAME OVER--------------
-    public void mostrarCartel(Entorno e) {
+    //-------------- MUESTRA LOS CARTELES--------------
+    public void mostrarCartelPerdiste(Entorno e) {
     	entorno.colorFondo(Color.BLACK);
     	entorno.cambiarFont("Arial", 58, Color.RED);
-    	entorno.escribirTexto("GAME OVER", 220, 300);
+    	entorno.escribirTexto("GAME OVER", 150, 300);
+    	entorno.cambiarFont("Arial", 18, Color.BLACK);
+    	entorno.escribirTexto("TIEMPO: "+ this.tiempoTranscurrido + "s", 350, 340);
+    	entorno.escribirTexto("ENEMIGOS ELIMINADOS: "+ this.enemigosEliminados, 285, 370);
+    }
+    public void mostrarCartelGanaste(Entorno e) {
+    	entorno.colorFondo(Color.WHITE);
+    	entorno.cambiarFont("Arial", 58, Color.BLUE);
+    	entorno.escribirTexto("CONGRATULATIONS", 110, 300);
+    	entorno.cambiarFont("Arial", 18, Color.BLACK);
+    	entorno.escribirTexto("TIEMPO: "+ this.tiempoTranscurrido + "s", 350, 340);
+    	entorno.escribirTexto("ENEMIGOS ELIMINADOS: "+ this.enemigosEliminados, 285, 370);
     }
     //-----------------------------------------------------------
     //-------------- CREA LOS OBJETOS----------------------------
@@ -168,7 +180,9 @@ public class Juego extends InterfaceJuego {
     		}
     	}
     }
-    public void actualizarGnomos() {}
+    public void actualizarGnomos() {
+    	
+    }
     public void actualizarBolaDeFuego() {
     	if(bolaDeFuego!=null) {
     		bolaDeFuego.dibujar(entorno);
@@ -194,8 +208,11 @@ public class Juego extends InterfaceJuego {
     
     public void tick() {
     	
-    	if(juegoTerminado) {
-    		mostrarCartel(entorno);
+    	if(juegoTerminado || gnomosPerdidos == 10) {
+    		mostrarCartelPerdiste(entorno);
+    		return;
+    	} else if(gnomosRescatados == 1) {
+    		mostrarCartelGanaste(entorno);
     		return;
     	}
     	
