@@ -13,7 +13,7 @@ public class Tortuga {
 	private int alto;
 	private Color color;
 	private double velocidadY = 0;
-	private boolean enElAire = false;
+	private boolean enElAire = true;
 	private boolean direccion;
 	private final double GRAVEDAD = 0.5;
 	private Random random = new Random();
@@ -85,6 +85,7 @@ public class Tortuga {
 	public int getAlto() {return alto;}
 	public int getAncho() {return ancho;}
 	public boolean getEnElAire() { return enElAire;}
+	public int getDireccion() { if(direccion) { return 1; } else { return -1; } }
 	
 	public boolean colisionConBolaDeFuego(Proyectil bolaDeFuego) {
         int tortugaIzquierda = this.x - this.ancho / 2;

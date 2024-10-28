@@ -12,14 +12,15 @@ public class Juego extends InterfaceJuego {
     private Entorno entorno;
     private Pep pep;
     private Proyectil bolaDeFuego = null;
+    private Proyectil[] bombas;
     private Isla[] islas;
     private Tortuga[] tortugas;
     private Gnomo[] gnomos;
     //private Image casaGnomo, fondo;
-    private int tiempoTranscurrido;
-    private int gnomosRescatados;
-    private int gnomosPerdidos;
-    private int enemigosEliminados;
+    private int tiempoTranscurrido = 0;
+    private int gnomosRescatados = 0;
+    private int gnomosPerdidos = 0;
+    private int enemigosEliminados = 0;
     private boolean juegoTerminado = false;
 	private Random random = new Random();
 	private int contadorTick = 0;
@@ -30,11 +31,8 @@ public class Juego extends InterfaceJuego {
         this.islas = new Isla[15];
         this.gnomos = new Gnomo[5];
         this.tortugas = new Tortuga[5];
+        this.bombas = new Proyectil[5];
         this.pep = new Pep(50, 500, 30, 30, Color.RED);
-        this.tiempoTranscurrido = 0;
-        this.gnomosRescatados = 0;
-        this.gnomosPerdidos = 0;
-        this.enemigosEliminados = 0;
         //this.casaGnomo = Herramientas.cargarImagen(null);
         //this.fondo = Herramientas.cargarImagen("fondognomos.png");
         
@@ -111,6 +109,15 @@ public class Juego extends InterfaceJuego {
             }
         }
     }
+    private void generarBombas(Tortuga[] tortugas) {
+    	for(int index = 0; index < 5; index ++) {
+    		if(!tortugas[index].getEnElAire()) {
+    			bombas[index] = new Proyectil(tortugas[index].getX() + (tortugas[index].getAncho() / 2 + 10) * tortugas[index].getDireccion(),
+    				                      	tortugas[index].getY() + tortugas[index].getAlto() / 2 - 10, 
+    				                      	tortugas[index].getDireccion(), Color.GRAY);	
+    		}
+    	}
+    }
     //---------------ACTUALIZA LOS OBJETOS----------------------------
     public void actualizarIslas() {
     	for(Isla isla : islas) {
@@ -133,7 +140,7 @@ public class Juego extends InterfaceJuego {
             }
             if (this.entorno.sePresionoBoton(this.entorno.BOTON_IZQUIERDO) || this.entorno.estaPresionada('C')) {
             	if(bolaDeFuego == null && !pep.getEnElAire()) {
-            		this.bolaDeFuego = new Proyectil(pep.getX() + (pep.getAncho() / 2 + 10) * pep.getDireccion(), pep.getY(), pep.getDireccion());
+            		this.bolaDeFuego = new Proyectil(pep.getX() + (pep.getAncho() / 2 + 10) * pep.getDireccion(), pep.getY() + pep.getAlto() / 2 - 10, pep.getDireccion(), Color.ORANGE);
             	}	
             }
             if(pep.getEnElAire()) { pep.aplicarGravedad(); }
@@ -159,9 +166,8 @@ public class Juego extends InterfaceJuego {
     	}
     }
     public void actualizarTortugas() {
-    	for(int index = 0; index < tortugas.length; index ++) {
-    		if(tortugas[index]!=null) {
-    			Tortuga tortuga = tortugas[index];
+    	for(Tortuga tortuga : tortugas) {
+    		if(tortuga != null) {
     			tortuga.dibujar(entorno);
     			tortuga.verificarColisiones(islas);
     			if(tortuga.getEnElAire()) {
@@ -176,6 +182,9 @@ public class Juego extends InterfaceJuego {
     					bolaDeFuego = null;
     				}
     			}
+    			if(tiempoTranscurrido % 5 == 0) {
+    				generarBombas(tortugas);
+    			}
     		}
     	}
     }
@@ -188,6 +197,16 @@ public class Juego extends InterfaceJuego {
     		bolaDeFuego.avanzar();
     		if(bolaDeFuego.desaparecer()) {
     			this.bolaDeFuego = null;
+    		}
+    	}
+    }
+    public void actualizarBombas() {
+    	for(int index = 0; index < tortugas.length; index ++) {
+    		if(bombas[index]!=null) {
+    			Proyectil bomba = bombas[index];
+    			bomba.dibujar(entorno);
+    			bomba.avanzarLento();
+    			bomba.desaparecer();
     		}
     	}
     }
@@ -226,6 +245,7 @@ public class Juego extends InterfaceJuego {
         actualizarTortugas();
         actualizarGnomos();
         actualizarBolaDeFuego();
+        actualizarBombas();
     }
     
     public static void main(String[] args) {

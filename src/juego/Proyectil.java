@@ -8,11 +8,14 @@ public class Proyectil {
     private static final int ANCHO = 20;
     private static final int ALTO = 20;
     private static final int VELOCIDADX = 5;
+    private static final int VELOCIDADLENTO = 3;
     
     // Variables de instancia
     private int coordenadaX;
     private int coordenadaY;
     private int direccion;
+    private boolean enElAire;
+    private Color color;
 
     /**
      * Constructor para inicializar el proyectil.
@@ -20,10 +23,11 @@ public class Proyectil {
      * @param coordenadaY Coordenada Y inicial del proyectil.
      * @param direccion Dirección del movimiento: 1 para derecha, -1 para izquierda.
      */
-    public Proyectil(int coordenadaX, int coordenadaY, int direccion) {
+    public Proyectil(int coordenadaX, int coordenadaY, int direccion, Color color) {
         this.coordenadaX = coordenadaX;
         this.coordenadaY = coordenadaY;
         this.direccion = direccion;
+        this.color = color;
     }
 
     /**
@@ -34,13 +38,14 @@ public class Proyectil {
     public int getY() { return this.coordenadaY; }
     public int getAncho() { return ANCHO; }
     public int getAlto() { return ALTO; }
+    public boolean getEnElAire() { return enElAire; }
 
     /**
      * Dibuja el proyectil en el entorno.
      * @param e Entorno donde se dibuja el proyectil.
      */
     public void dibujar(Entorno e) {
-        e.dibujarRectangulo(this.coordenadaX, this.coordenadaY, ANCHO, ALTO, 0, Color.ORANGE);
+        e.dibujarRectangulo(this.coordenadaX, this.coordenadaY, ANCHO, ALTO, 0, color);
     }
 
     /**
@@ -49,6 +54,10 @@ public class Proyectil {
      */
     public void avanzar() {
         this.coordenadaX += VELOCIDADX * direccion;
+    }
+    
+    public void avanzarLento() {
+    	this.coordenadaX += VELOCIDADLENTO * direccion;
     }
 
     /**
