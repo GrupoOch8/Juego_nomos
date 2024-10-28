@@ -48,7 +48,7 @@ public class Juego extends InterfaceJuego {
         this.tiempoTranscurrido += tiempoAnterior;
     }
     public void mostrarEstadoJuego(Entorno entorno) {
-        entorno.cambiarFont("Arial", 18, Color.WHITE);
+        entorno.cambiarFont("Arial", 18, Color.BLACK);
         entorno.escribirTexto("Tiempo: " + this.tiempoTranscurrido + "s", 20, 20);
         entorno.escribirTexto("Gnomos rescatados: " + this.gnomosRescatados, 20, 40);
         entorno.escribirTexto("Gnomos perdidos: " + this.gnomosPerdidos, 20, 60);
