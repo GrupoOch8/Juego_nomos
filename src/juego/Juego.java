@@ -22,6 +22,7 @@ public class Juego extends InterfaceJuego {
     private int enemigosEliminados;
     private boolean juegoTerminado = false;
 	private Random random = new Random();
+	private int contadorTick = 0;
 
     public Juego() {
     	//inicializa el objeto entorno
@@ -44,8 +45,12 @@ public class Juego extends InterfaceJuego {
     }
     
     // ------------- CONTROLA EL MARCADOR -----------------------
-    public void actualizarTiempo(int tiempoAnterior) {
-        this.tiempoTranscurrido += tiempoAnterior;
+    public void actualizarTiempo() {
+        contadorTick++;
+        if(contadorTick >=60) {
+        	this.tiempoTranscurrido++;
+        	contadorTick=0;
+        }
     }
     public void mostrarEstadoJuego(Entorno entorno) {
         entorno.cambiarFont("Arial", 18, Color.BLACK);
@@ -139,7 +144,6 @@ public class Juego extends InterfaceJuego {
     }
     public void actualizarTortugas() {}
     public void actualizarGnomos() {}
-    //
     
     public boolean estaSobreIsla(Pep pep) {
         for (Isla isla : islas) {
@@ -164,6 +168,7 @@ public class Juego extends InterfaceJuego {
     	//MUESTRA EL FONDO
         this.entorno.colorFondo(Color.cyan);
         mostrarEstadoJuego(entorno);
+        actualizarTiempo();
         
         //MUESTRA LAS ISLAS
         for (Isla isla : islas) { isla.dibujar(this.entorno); }
