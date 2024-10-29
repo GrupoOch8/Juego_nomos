@@ -127,6 +127,12 @@ public class Juego extends InterfaceJuego {
     public void actualizarIslas() {
     	for(Isla isla : islas) {
     		isla.dibujar(entorno);
+    		isla.mover();
+    		if(isla.esIslaSuperior()) {
+    			isla.cambiarDireccion();
+    		} else {
+    			isla.reposicionar();
+    		}
     	}
     }
     public void actualizarPep() {
