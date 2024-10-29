@@ -228,17 +228,20 @@ public class Pep {
         return colisionX && colisionY;
     }
     
-    /*public boolean colisionConBomba(Bomba[] bomba) {
-        int tortugaIzquierda = this.x - this.ancho / 2;
-        int tortugaDerecha = this.x + this.ancho / 2;
+    public boolean colisionConBomba(Proyectil bomba) {
+        int pepIzquierda = this.coordenadaX - this.ancho / 2;
+        int pepDerecha = this.coordenadaX + this.ancho / 2;
+        int pepArriba = this.coordenadaY - this.alto / 2;
+        int pepAbajo = this.coordenadaY + this.alto / 2;
 
-        int bolaDeFuegoIzquierda = bolaDeFuego.getX() - bolaDeFuego.getAncho() / 2;
-        int bolaDeFuegoDerecha = bolaDeFuego.getX() + bolaDeFuego.getAncho() / 2;
-        boolean colisionX = false;
+        int bombaIzquierda = bomba.getX() - bomba.getAncho() / 2;
+        int bombaDerecha = bomba.getX() + bomba.getAncho() / 2;
+        int bombaArriba = bomba.getY() - bomba.getAlto() / 2;
+        int bombaAbajo = bomba.getY() + bomba.getAlto() / 2;
 
-        if(getY()==bolaDeFuego.getY()) {
-        	colisionX = tortugaDerecha > bolaDeFuegoIzquierda && tortugaIzquierda < bolaDeFuegoDerecha;
-        }
-        return colisionX;
-    }*/
+        boolean colisionX = pepDerecha > bombaIzquierda && pepIzquierda < bombaDerecha;
+        boolean colisionY = pepAbajo > bombaArriba && pepArriba < bombaAbajo;
+
+        return colisionX && colisionY;
+    }
 }

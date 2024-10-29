@@ -94,7 +94,7 @@ public class Juego extends InterfaceJuego {
         int espaciadoX = 180;
         int espaciadoY = 100;
         int index = 0;
-
+        
         for (int filas = 0; filas < 5; filas++) {
             int xInicial = xCentro - (filas * espaciadoX / 2);
             for (int i = 0; i <= filas; i++) {
@@ -148,7 +148,11 @@ public class Juego extends InterfaceJuego {
             		this.bolaDeFuego = new Proyectil(pep.getX() + (pep.getAncho() / 2 + 10) * pep.getDireccion(), pep.getY() + pep.getAlto() / 2 - 10, pep.getDireccion(), Color.ORANGE);
             	}	
             }
-            if(pep.getEnElAire()) { pep.aplicarGravedad(); }
+            
+            if(pep.getEnElAire()) { 
+            	pep.aplicarGravedad(); 
+            }
+            
             for(Tortuga tortuga : tortugas) {
             	if(pep.colisionConTortuga(tortuga)) {
             		this.juegoTerminado = true;
@@ -156,10 +160,20 @@ public class Juego extends InterfaceJuego {
             		return;
             	}
             }
+            
             if(pep.cayoAlVacio()) {
                 juegoTerminado = true;
             }
-            //if(pep.colisionConProyectil())
+            
+            for(Proyectil bomba : bombas) {
+            	if(bomba != null) {
+            		if(pep.colisionConBomba(bomba)) {
+            			this.juegoTerminado = true;
+            			pep = null;
+            			return;
+            		}
+            	}
+            }
     	}
     }
     public void actualizarTortugas() {
@@ -224,13 +238,20 @@ public class Juego extends InterfaceJuego {
     	}
     }
     public void actualizarBombas() {
-    	for(int index = 0; index < tortugas.length; index ++) {
+    	for(int index = 0; index < bombas.length; index ++) {
     		if(bombas[index]!=null) {
     			Proyectil bomba = bombas[index];
     			bomba.dibujar(entorno);
     			bomba.avanzar();
     			if(bomba.desaparecer()) {
     				bombas[index] = null;
+    			}
+    			
+    			if(bolaDeFuego != null) {
+    				if(bomba.colisionConBolaDeFuego(bolaDeFuego)) {
+    					bombas[index]=null;
+    					bolaDeFuego = null;
+    				}
     			}
     		}
     	}

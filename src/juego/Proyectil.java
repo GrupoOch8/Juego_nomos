@@ -64,4 +64,18 @@ public class Proyectil {
     public boolean desaparecer() {
     	return (direccion == 1 && this.coordenadaX >= 800) || (direccion == -1 && this.coordenadaX <= 0);   
     }
+    
+    public boolean colisionConBolaDeFuego(Proyectil bolaDeFuego) {
+        int bombaIzquierda = this.coordenadaX - ANCHO / 2;
+        int bombaDerecha = this.coordenadaX + ANCHO / 2;
+
+        int bolaDeFuegoIzquierda = bolaDeFuego.getX() - bolaDeFuego.getAncho() / 2;
+        int bolaDeFuegoDerecha = bolaDeFuego.getX() + bolaDeFuego.getAncho() / 2;
+        boolean colisionX = false;
+
+        if(getY()==bolaDeFuego.getY()) {
+        	colisionX = bombaDerecha > bolaDeFuegoIzquierda && bombaIzquierda < bolaDeFuegoDerecha;
+        }
+        return colisionX;
+    }
 }
