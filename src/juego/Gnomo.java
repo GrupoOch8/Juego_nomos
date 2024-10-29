@@ -100,12 +100,6 @@ public class Gnomo {
 		return false;
 	}
 
-
-	public void eliminarse() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public boolean estaEnElAire() {
 		return this.enElAire;
 	}

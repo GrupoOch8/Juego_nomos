@@ -199,12 +199,11 @@ public class Juego extends InterfaceJuego {
     				}
     			
     				if(gnomo.colisionaConTortuga() || gnomo.colisionaConBomba() || gnomo.caerAlVacio()) {
-    					gnomo.eliminarse();
+    					gnomos[index] = null;
     					gnomosPerdidos++;
     				}
     				if(pep != null) {
     					if(gnomo.coalisionPep(pep)) {
-    						System.out.println("eliminarse");
     						gnomos[index] = null;
     						gnomosRescatados++;
     					}
