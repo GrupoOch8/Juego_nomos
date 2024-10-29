@@ -8,7 +8,6 @@ public class Proyectil {
     private static final int ANCHO = 20;
     private static final int ALTO = 20;
     private static final int VELOCIDADX = 5;
-    private static final int VELOCIDADLENTO = 3;
     
     // Variables de instancia
     private int coordenadaX;
@@ -54,10 +53,6 @@ public class Proyectil {
      */
     public void avanzar() {
         this.coordenadaX += VELOCIDADX * direccion;
-    }
-    
-    public void avanzarLento() {
-    	this.coordenadaX += VELOCIDADLENTO * direccion;
     }
 
     /**

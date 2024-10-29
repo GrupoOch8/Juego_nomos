@@ -114,6 +114,9 @@ public class Pep {
                 if (verificarColisionAbajo(isla, limIzq, limDer, limBot, limTop)) {
                     this.coordenadaY = isla.getY() - isla.getAlto() / 2 - this.alto / 2;
                     this.velocidadY = 0;
+                    if(enElAire) {
+                    	System.out.println("CAMBIAR DIRECCION");
+                    }
                     this.enElAire = false;
                     colisionAbajo = true;
                     break;
@@ -211,7 +214,7 @@ public class Pep {
     	
     }
     
-    public boolean colisionConGnomo(Gnomo gnomo) {
+    /*public boolean colisionConGnomo(Gnomo gnomo) {
         int pepIzquierda = this.coordenadaX - this.ancho / 2;
         int pepDerecha = this.coordenadaX + this.ancho / 2;
         int pepArriba = this.coordenadaY - this.alto / 2;
@@ -226,7 +229,7 @@ public class Pep {
         boolean colisionY = pepAbajo > gnomoArriba && pepArriba < gnomoAbajo;
 
         return colisionX && colisionY;
-    }
+    }*/
     
     public boolean colisionConTortuga(Tortuga tortuga) {
         int pepIzquierda = this.coordenadaX - this.ancho / 2;
@@ -244,4 +247,18 @@ public class Pep {
 
         return colisionX && colisionY;
     }
+    
+    /*public boolean colisionConBomba(Bomba[] bomba) {
+        int tortugaIzquierda = this.x - this.ancho / 2;
+        int tortugaDerecha = this.x + this.ancho / 2;
+
+        int bolaDeFuegoIzquierda = bolaDeFuego.getX() - bolaDeFuego.getAncho() / 2;
+        int bolaDeFuegoDerecha = bolaDeFuego.getX() + bolaDeFuego.getAncho() / 2;
+        boolean colisionX = false;
+
+        if(getY()==bolaDeFuego.getY()) {
+        	colisionX = tortugaDerecha > bolaDeFuegoIzquierda && tortugaIzquierda < bolaDeFuegoDerecha;
+        }
+        return colisionX;
+    }*/
 }

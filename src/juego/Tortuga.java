@@ -58,7 +58,6 @@ public class Tortuga {
             if (isla != null) {
                 if (verificarColisionAbajo(isla, limIzq, limDer, limBot, limTop)) {
                     this.y = isla.getY() - isla.getAlto() / 2 - this.alto / 2;
-                    this.velocidadY = 0;
                     this.enElAire = false;
                     colisionAbajo = true;
                     if(limIzq < isla.getX() - isla.getAncho() / 2) {

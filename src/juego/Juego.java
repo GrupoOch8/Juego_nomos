@@ -37,17 +37,16 @@ public class Juego extends InterfaceJuego {
         //this.fondo = Herramientas.cargarImagen("fondognomos.png");
         
         crearTortugas();
-        crearGnomos();
         crearIslas();
+        crearGnomos();
         this.entorno.iniciar();
     }
     
     // ------------- CONTROLA EL MARCADOR -----------------------
     public void actualizarTiempo() {
         contadorTick++;
-        if(contadorTick >=60) {
+        if(contadorTick % 60 == 0) {
         	this.tiempoTranscurrido++;
-        	contadorTick=0;
         }
     }
     public void mostrarEstadoJuego(Entorno entorno) {
@@ -87,7 +86,6 @@ public class Juego extends InterfaceJuego {
         	}
     	}
     }
-    private void crearGnomos() {}
     private void crearIslas() {
         int xCentro = 800 / 2;
         int yInicial = 100;
@@ -111,13 +109,20 @@ public class Juego extends InterfaceJuego {
     }
     private void generarBombas(Tortuga[] tortugas) {
     	for(int index = 0; index < 5; index ++) {
-    		if(!tortugas[index].getEnElAire()) {
+    		if(!tortugas[index].getEnElAire() || bombas[index] == null) {
     			bombas[index] = new Proyectil(tortugas[index].getX() + (tortugas[index].getAncho() / 2 + 10) * tortugas[index].getDireccion(),
     				                      	tortugas[index].getY() + tortugas[index].getAlto() / 2 - 10, 
     				                      	tortugas[index].getDireccion(), Color.GRAY);	
     		}
     	}
     }
+    private void crearGnomos() {
+		int xInicial = islas[0].getX() -15;
+		int yInicial = islas[0].getY() - islas[0].getAlto() / 2 - 15;
+		for (int i = 0; i < gnomos.length; i++) {
+			gnomos[i] = new Gnomo(xInicial + i * 10, yInicial, 20, 20, Color.MAGENTA);
+		}
+}
     //---------------ACTUALIZA LOS OBJETOS----------------------------
     public void actualizarIslas() {
     	for(Isla isla : islas) {
@@ -146,23 +151,15 @@ public class Juego extends InterfaceJuego {
             if(pep.getEnElAire()) { pep.aplicarGravedad(); }
             for(Tortuga tortuga : tortugas) {
             	if(pep.colisionConTortuga(tortuga)) {
-            		System.out.println(juegoTerminado);
             		this.juegoTerminado = true;
-            		System.out.println(juegoTerminado);
             		pep = null;
             		return;
-            	}
-            }
-            for(Gnomo gnomo : gnomos) {
-            	if(gnomo != null) {
-            		if(pep.colisionConGnomo(gnomo)) {
-            			gnomosRescatados++;
-            		}
             	}
             }
             if(pep.cayoAlVacio()) {
                 juegoTerminado = true;
             }
+            //if(pep.colisionConProyectil())
     	}
     }
     public void actualizarTortugas() {
@@ -182,15 +179,42 @@ public class Juego extends InterfaceJuego {
     					bolaDeFuego = null;
     				}
     			}
-    			if(tiempoTranscurrido % 5 == 0) {
+    			if(contadorTick % 300 == 0) {
     				generarBombas(tortugas);
     			}
     		}
     	}
     }
     public void actualizarGnomos() {
-    	
-    }
+    	for(int index = 0; index < gnomos.length; index ++) {
+    		Gnomo gnomo = gnomos[index];
+    			if(gnomo != null) {
+    				gnomo.dibujar(entorno);
+    				gnomo.verificarColisiones(islas);
+    			
+    				if(gnomo.estaEnElAire()) {
+    					gnomo.caer();
+    				} else {
+    					gnomo.mover();
+    				}
+    			
+    				if(gnomo.colisionaConTortuga() || gnomo.colisionaConBomba() || gnomo.caerAlVacio()) {
+    					gnomo.eliminarse();
+    					gnomosPerdidos++;
+    				}
+    				if(pep != null) {
+    					if(gnomo.coalisionPep(pep)) {
+    						System.out.println("eliminarse");
+    						gnomos[index] = null;
+    						gnomosRescatados++;
+    					}
+    				}
+    				if(contadorTick % 600 == 0) {
+    					crearGnomos();
+    				}
+    			}
+    		}
+    	}
     public void actualizarBolaDeFuego() {
     	if(bolaDeFuego!=null) {
     		bolaDeFuego.dibujar(entorno);
@@ -205,24 +229,14 @@ public class Juego extends InterfaceJuego {
     		if(bombas[index]!=null) {
     			Proyectil bomba = bombas[index];
     			bomba.dibujar(entorno);
-    			bomba.avanzarLento();
-    			bomba.desaparecer();
+    			bomba.avanzar();
+    			if(bomba.desaparecer()) {
+    				bombas[index] = null;
+    			}
     		}
     	}
     }
-    
-    public boolean estaSobreIsla(Pep pep) {
-        for (Isla isla : islas) {
-            if (isla != null && pep!= null &&
-                pep.getX() > isla.getX() - isla.getAncho() / 2 &&
-                pep.getX() < isla.getX() + isla.getAncho() / 2 &&
-                pep.getY() >= isla.getY() - isla.getAlto() / 2 &&
-                pep.getY() <= isla.getY() + isla.getAlto() / 2) {
-                return true;
-            }
-        }
-        return false;
-    }
+
     
     public void tick() {
     	

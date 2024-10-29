@@ -7,16 +7,16 @@ import entorno.Entorno;
 
 public class Gnomo {
 	
-	private int x;
+	private double x;
 	private int y;
 	private int ancho;
 	private int alto;
 	private Color color;
-	private int velocidadY = 0;
+	private double velocidadY = 0;
 	private boolean movimiento;
 	private boolean enElAire = false;
-	private final double GRAVEDAD = 0.5;
-	//private Random random = new Random();
+	private final double GRAVEDAD = 0.3;
+	private Random random = new Random();
 	private int coordenadaY;
 	
 	
@@ -26,96 +26,100 @@ public class Gnomo {
 		this.ancho = ancho;
 		this.alto = alto;
 		this.color = color;
-		this.movimiento = false;
+		this.movimiento = random.nextBoolean();
 	}
-	
-    //dibuja al gnomo en el entorno
-	public void dibujarGnomo(Entorno e) {
-		e.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, this.color);
-		
-	}
-    //cuando el gnomo esta en contacto con la isla ejecuta el movimiento
-	public void mover (boolean direccion) {
-		boolean chocaConIsla = true;
-		if (chocaConIsla) {
-			if (direccion) {
-				int velocidad = 5;
-				x = x-velocidad;
-			} else {
-				int velocidad=5;
-				x = x+velocidad;
-			}
-		}
 
+
+	public void dibujar(Entorno e) {
+			e.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, this.color);
 	}
-	
-	//usa un booleano para cambiar el movimiento de manera aleatoria
-	public void cambiarMovimiento () {
-		this.movimiento = Math.random()<5;
-	}
-	
-	//altera la posicion del objeto en el eje Y cuando "esta en el aire" 
-	private void aplicarGravedad() {
-        if (this.enElAire) {
-            this.velocidadY += GRAVEDAD;
-            this.coordenadaY += this.velocidadY;
+
+
+	public void verificarColisiones(Isla[] islas) {
+		boolean colisionAbajo = false;
+
+		double limIzq = this.x - this.ancho / 2;
+        double limDer = this.x + this.ancho / 2;
+        int limTop = this.y - this.alto / 2;
+        int limBot = this.y + this.alto / 2;
+
+        for (Isla isla : islas) {
+            if (isla != null) {
+                if (verificarColisionAbajo(isla, limIzq, limDer, limBot, limTop)) {
+                    this.y = isla.getY() - isla.getAlto() / 2 - this.alto / 2;
+                    if(enElAire) {
+                    	movimiento = random.nextBoolean();
+                    }
+                    this.enElAire = false;
+                    colisionAbajo = true;
+                    break;
+                }
+            }
         }
-	}
-	//verifica si el gnomo esta en contacto con una isla o no
-	public void chocaConIsla(Isla[] islas) {
-		boolean choca = false;
-		
-		int LimiteGnomoIzq = getX() - getAncho() / 2;
-		int LimiteGnomoDer = getX() + getAncho() / 2;
-		int LimiteGnomoSup = getY() - getAlto() / 2;
-		int LimiteGnomoInf = getY() + getAlto() / 2;
-		
-		  for (Isla isla : islas) {
-	            if (isla != null) {
-	                if (verificarChoca(isla, LimiteGnomoIzq, LimiteGnomoDer, LimiteGnomoInf, LimiteGnomoSup)) {
-	                    this.y = isla.getY() - isla.getAlto() / 2 - this.alto / 2;
-	                    this.velocidadY = 0;
-	                    this.enElAire = false;
-	                    choca = true;
-	                    if(LimiteGnomoIzq < isla.getX() - isla.getAncho() / 2) {
-	                    	movimiento = true;
-	                    }
-	                    if(LimiteGnomoDer > isla.getX() + isla.getAncho() / 2) {
-	                    	movimiento = false;
-	                    }
-	                    break;
-	                }
-	            }
-	        }
-		  if (!choca) {
-				enElAire = true;
-			}
+		if (!colisionAbajo) {
+			enElAire = true;
 		}
-
-		private boolean verificarChoca(Isla isla, int limIzq, int limDer, int limBot, int limTop) {
-	        return limDer > isla.getX() - isla.getAncho() / 2 && limIzq < isla.getX() + isla.getAncho() / 2
-	                && limBot >= isla.getY() - isla.getAlto() / 2 && limTop < isla.getY();
-	    }
-		
-	
-	
-	public void actualizar(Isla[] islas, Entorno e) {
-		aplicarGravedad();
-		chocaConIsla(islas);
-		mover(this.movimiento);
 	}
-	
-	public void coalisionPep(Pep pep) {
+	private boolean verificarColisionAbajo(Isla isla, double limIzq, double limDer, int limBot, int limTop) {
+        return limDer > isla.getX() - isla.getAncho() / 2 && limIzq < isla.getX() + isla.getAncho() / 2
+                && limBot >= isla.getY() - isla.getAlto() / 2 && limTop < isla.getY();
+    }
+
+
+	public void mover() {
+		if(this.movimiento) {
+			x += 0.8;
+		} else {
+			x -= 0.8;
+		}
+		
+	}
+
+
+	public void caer() {
+		if (enElAire) {
+			velocidadY += GRAVEDAD;
+			y += velocidadY;
+		}
+	}
+
+
+	public boolean colisionaConTortuga() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	public boolean colisionaConBomba() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean caerAlVacio() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	public void eliminarse() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean estaEnElAire() {
+		return this.enElAire;
+	}
+
+	public boolean coalisionPep(Pep pep) {
 		
 		//limites del gnomo
 		
-		int LimiteGnomoIzq = getX() - getAncho() / 2;
-		int LimiteGnomoDer = getX() + getAncho() / 2;
+		double LimiteGnomoIzq = getX() - getAncho() / 2;
+		double LimiteGnomoDer = getX() + getAncho() / 2;
 		int LimiteGnomoSup = getY() - getAlto() / 2;
 		int LimiteGnomoInf = getY() + getAlto() / 2;
 		
 		//limites de pep
-		
 		int LimitePepIzq = pep.getX() - pep.getAncho() / 2;
 		int LimitePepDer = pep.getX() + pep.getAncho() / 2;
 		int LimitePepSup = pep.getY() - pep.getAlto() / 2;
@@ -125,10 +129,9 @@ public class Gnomo {
 		
 		if (LimiteGnomoDer > LimitePepIzq && LimiteGnomoIzq < LimitePepDer &&
 			LimiteGnomoInf > LimitePepSup && LimiteGnomoSup < LimitePepInf ) {
-			//choque ocurrido
-			
-			
-			
+			return true;
+		} else {
+			return false;
 		}
 	}
 	
@@ -136,8 +139,8 @@ public class Gnomo {
 		
 		//limites del gnomo
 		
-		int LimiteGnomoIzq = getX() - getAncho() / 2;
-		int LimiteGnomoDer = getX() + getAncho() / 2;
+		double LimiteGnomoIzq = getX() - getAncho() / 2;
+		double LimiteGnomoDer = getX() + getAncho() / 2;
 		int LimiteGnomoSup = getY() - getAlto() / 2;
 		int LimiteGnomoInf = getY() + getAlto() / 2;
 		
@@ -159,7 +162,7 @@ public class Gnomo {
 	}
 	
 	
-	public int getX() {return x;}
+	public double getX() {return x;}
 	
 	public int getY() {return y;}
 	
@@ -169,7 +172,5 @@ public class Gnomo {
 	
 	public boolean getenElAire() { return enElAire;}
 	
-	public boolean seHaPerdido() {return false;}
-	
-
+	public boolean seHaPerdido() { return false;}
 }
