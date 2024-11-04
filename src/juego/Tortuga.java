@@ -1,6 +1,7 @@
 package juego;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.util.Random;
 
 import entorno.Entorno;
@@ -37,9 +38,12 @@ public class Tortuga {
 			}
 		}
 	}
-	public void dibujar(Entorno e) {
-		e.dibujarRectangulo(x, y, ancho, alto, 0, color);
+	public void dibujar(Entorno entorno, Image imagenTortuga) {
+	    if (imagenTortuga != null) {
+	        entorno.dibujarImagen(imagenTortuga, x, y, 0, 0.05);
+	    }
 	}
+	
 	public void aplicarGravedad() {
 		if (enElAire) {
 			velocidadY += GRAVEDAD;

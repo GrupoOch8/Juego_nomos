@@ -65,16 +65,4 @@ public class Isla {
 		}
 	}
 
-	public void reposicionar() {
-		if(direccion) {
-			if( x >= 860 ) {
-				x = -60;
-			}
-		} else {
-			if(x <= -60) {
-				x = 860;
-			}
-		}
-		
-	}
 }

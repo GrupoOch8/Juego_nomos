@@ -1,6 +1,7 @@
 package juego;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.util.Random;
 
 import entorno.Entorno;
@@ -30,8 +31,10 @@ public class Gnomo {
 	}
 
 
-	public void dibujar(Entorno e) {
-			e.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, this.color);
+	public void dibujar(Entorno entorno, Image imagenGnomo) {
+	    if (imagenGnomo != null) {
+	        entorno.dibujarImagen(imagenGnomo, x, y, 0, 0.1);
+	    }
 	}
 
 
@@ -84,20 +87,45 @@ public class Gnomo {
 	}
 
 
-	public boolean colisionaConTortuga() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public boolean colisionaConTortuga(Tortuga tortuga) {
+		double pepIzquierda = this.x - this.ancho / 2;
+        double pepDerecha = this.x + this.ancho / 2;
+        int pepArriba = this.coordenadaY - this.alto / 2;
+        int pepAbajo = this.coordenadaY + this.alto / 2;
+
+        double tortugaIzquierda = tortuga.getX() - tortuga.getAncho() / 2;
+        double tortugaDerecha = tortuga.getX() + tortuga.getAncho() / 2;
+        double tortugaArriba = tortuga.getY() - tortuga.getAlto() / 2;
+        double tortugaAbajo = tortuga.getY() + tortuga.getAlto() / 2;
+
+        boolean colisionX = pepDerecha > tortugaIzquierda && pepIzquierda < tortugaDerecha;
+        boolean colisionY = pepAbajo > tortugaArriba && pepArriba < tortugaAbajo;
+
+        return colisionX && colisionY;
+    }
 
 
-	public boolean colisionaConBomba() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean colisionaConBomba(Proyectil bomba) {
+		double tortugaIzquierda = this.x - this.ancho / 2;
+        double tortugaDerecha = this.x + this.ancho / 2;
+
+        double bolaDeFuegoIzquierda = bomba.getX() - bomba.getAncho() / 2;
+        double bolaDeFuegoDerecha = bomba.getX() + bomba.getAncho() / 2;
+        boolean colisionX = false;
+
+        if(getY()==bomba.getY()) {
+        	colisionX = tortugaDerecha > bolaDeFuegoIzquierda && tortugaIzquierda < bolaDeFuegoDerecha;
+        }
+        return colisionX;
 	}
+	
 
 	public boolean caerAlVacio() {
-		// TODO Auto-generated method stub
-		return false;
+	 	if(coordenadaY >= 600) {
+    		return true;
+    	}
+    	return false;
+    	
 	}
 
 	public boolean estaEnElAire() {
@@ -129,7 +157,7 @@ public class Gnomo {
 		}
 	}
 	
-	public void coalisionTortuga(Tortuga tortuga) {
+	public boolean coalisionTortuga(Tortuga tortuga) {
 		
 		//limites del gnomo
 		
@@ -149,8 +177,10 @@ public class Gnomo {
 		
 		if (LimiteGnomoDer > LimiteTortugaIzq && LimiteGnomoIzq < LimiteTortugaDer &&
 			LimiteGnomoInf > LimiteTortugaSup && LimiteGnomoSup < LimiteTortugaInf ) {
-			
 			//choque ocurrido
+			return true;
+		}else {
+			return false;
 		}
 		
 	}
@@ -167,4 +197,9 @@ public class Gnomo {
 	public boolean getenElAire() { return enElAire;}
 	
 	public boolean seHaPerdido() { return false;}
+
+
+	public boolean colisionPep(Pep pep) {
+		return false;
+	}
 }

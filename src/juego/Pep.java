@@ -1,6 +1,8 @@
 package juego;
 
 import java.awt.Color;
+import java.awt.Image;
+
 import entorno.Entorno;
 
 public class Pep {
@@ -42,8 +44,10 @@ public class Pep {
      * Dibuja a Pep en la pantalla.
      * @param e Entorno donde se dibuja el personaje.
      */
-    public void dibujar(Entorno e) {
-        e.dibujarRectangulo(coordenadaX, coordenadaY, ancho, alto, 0, color);
+    public void dibujar(Entorno e, Image imagenPep) {
+        if(imagenPep !=null) {
+            e.dibujarImagen(imagenPep, coordenadaX, coordenadaY, 0, 0.1);
+        }
     }
 
     // Getters
