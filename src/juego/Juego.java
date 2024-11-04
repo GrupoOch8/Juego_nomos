@@ -40,14 +40,14 @@ public class Juego extends InterfaceJuego {
 		this.tortugas = new Tortuga[5];
 		this.bombas = new Proyectil[5];
 		this.pep = new Pep(50, 500, 30, 30);
-		this.fondo = Herramientas.cargarImagen("img/fondo.jpg");
-		this.casaGnomo = Herramientas.cargarImagen("img/casaGnomos.png");
-		this.imgGnomo = Herramientas.cargarImagen("img/gnomo.png");
-		this.imgTortuga = Herramientas.cargarImagen("img/tortuga.png");
-		this.imgPep = Herramientas.cargarImagen("img/pep.png");
-		this.bolaPep = Herramientas.cargarImagen("img/proyectilPep.png");
-		this.imgBomba = Herramientas.cargarImagen("img/bombaTortuga.png");
-		this.imgIsla = Herramientas.cargarImagen("img/plataforma.png");
+		this.fondo = Herramientas.cargarImagen("Imagenes/fondo.jpg");
+		this.casaGnomo = Herramientas.cargarImagen("Imagenes/casaGnomos.png");
+		this.imgGnomo = Herramientas.cargarImagen("Imagenes/gnomo.png");
+		this.imgTortuga = Herramientas.cargarImagen("Imagenes/tortuga.png");
+		this.imgPep = Herramientas.cargarImagen("Imagenes/pep.png");
+		this.bolaPep = Herramientas.cargarImagen("Imagenes/proyectilPep.png");
+		this.imgBomba = Herramientas.cargarImagen("Imagenes/bombaTortuga.png");
+		this.imgIsla = Herramientas.cargarImagen("Imagenes/plataforma.png");
 
 		crearTortugas();
 		crearIslas();
