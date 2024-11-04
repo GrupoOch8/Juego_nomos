@@ -1,80 +1,43 @@
 package juego;
 
-import java.awt.Color;
+import java.awt.Image;
 import entorno.Entorno;
 
 public class Isla {
-    private int x;
-    private int y;
-    private int ancho;
-    private int alto;
-    private Color color;
-    private boolean direccion;
+	private int x;
+	private int y;
+	private int ancho;
+	private int alto;
 
-    public Isla(int x, int y, int ancho, int alto, Color color) {
-        this.x = x;
-        this.y = y;
-        this.ancho = ancho;
-        this.alto = alto;
-        this.color = color;
-        this.direccion = false;
-    }
+	public Isla(int x, int y, int ancho, int alto) {
+		this.x = x;
+		this.y = y;
+		this.ancho = ancho;
+		this.alto = alto;
+	}
 
-    public int getX() {
-        return x;
-    }
+	public int getX() {
+		return x;
+	}
 
-    public int getY() {
-        return y;
-    }
+	public int getY() {
+		return y;
+	}
 
-    public int getAncho() {
-        return ancho;
-    }
+	public int getAncho() {
+		return ancho;
+	}
 
-    public int getAlto() {
-        return alto;
-    }
+	public int getAlto() {
+		return alto;
+	}
 
-    public Color getColor() {
-        return color;
-    }
 
-    public void dibujar(Entorno entorno) {
-        entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, this.color);
-    }
 
-	public void mover() {
-		if(direccion) {
-			x += 1;
-		} else {
-			x -= 1;
+	public void dibujar(Entorno entorno, Image imgIsla) {
+		if (imgIsla != null) {
+			entorno.dibujarImagen(imgIsla, x, y, 0, 0.06);
 		}
 	}
 
-	public boolean esIslaSuperior() {
-		if(y <= 300) {
-			return true;
-		}
-		return false;
-	}
-
-	public void cambiarDireccion() {
-		if(x <= 60 || x >= 740) {
-			direccion = !direccion;
-		}
-	}
-
-	public void reposicionar() {
-		if(direccion) {
-			if( x >= 860 ) {
-				x = -60;
-			}
-		} else {
-			if(x <= -60) {
-				x = 860;
-			}
-		}
-		
-	}
 }
